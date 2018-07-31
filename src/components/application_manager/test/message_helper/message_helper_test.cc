@@ -279,8 +279,9 @@ TEST(MessageHelperTestCreate,
   object[strings::menu_params] = 1;
   object[strings::cmd_icon] = 1;
   object[strings::cmd_icon][strings::value] = "10";
+  object[strings::cmd_id] = 5;
 
-  vis.insert(std::pair<uint32_t, smart_objects::SmartObject*>(5, &object));
+  vis.insert(std::pair<uint32_t, smart_objects::SmartObject*>(1, &object));
 
   EXPECT_CALL(*appSharedMock, commands_map()).WillOnce(Return(data_accessor));
   EXPECT_CALL(*appSharedMock, app_id()).WillOnce(Return(1u));

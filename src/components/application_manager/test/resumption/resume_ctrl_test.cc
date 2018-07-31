@@ -355,7 +355,7 @@ TEST_F(ResumeCtrlTest, StartResumption_AppWithCommands) {
       .WillByDefault(ReturnRef(*mock_help_prompt_manager_));
 
   for (uint32_t i = 0; i < count_of_commands; ++i) {
-    EXPECT_CALL(*mock_app_, AddCommand(i, test_application_commands[i]));
+    EXPECT_CALL(*mock_app_, AddCommand(i + 1, test_application_commands[i]));
     EXPECT_CALL(*mock_help_prompt_manager_,
                 OnVrCommandAdded(i, test_application_commands[i], true));
   }
