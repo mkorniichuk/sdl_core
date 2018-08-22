@@ -143,12 +143,13 @@ class AddCommandRequest : public app_mngr::commands::CommandRequestImpl {
   bool IsWhiteSpaceExist();
 
   /**
-   * @brief Calculate command`s internal consecutive number used during
+   * @brief Calculates command`s internal consecutive number used during
    * resumption. This method is called when we add a new command.
+   * @param[in] app Application for wich a consecutive number is calculated
    * @return internal consecutive number
    */
   uint32_t CalcAppInternalConsecutiveNumber(
-      app_mngr::ApplicationConstSharedPtr app);
+      app_mngr::ApplicationConstSharedPtr app) const;
 
   inline bool BothSend() const;
 

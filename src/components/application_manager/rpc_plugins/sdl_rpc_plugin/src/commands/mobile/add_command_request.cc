@@ -517,7 +517,7 @@ void AddCommandRequest::on_event(const event_engine::Event& event) {
 }
 
 uint32_t AddCommandRequest::CalcAppInternalConsecutiveNumber(
-    ApplicationConstSharedPtr app) {
+    ApplicationConstSharedPtr app) const {
   LOG4CXX_AUTO_TRACE(logger_);
   const DataAccessor<CommandsMap> accessor = app->commands_map();
   const CommandsMap& commands = accessor.GetData();

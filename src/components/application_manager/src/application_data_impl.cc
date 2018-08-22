@@ -40,13 +40,16 @@ namespace application_manager {
 CREATE_LOGGERPTR_GLOBAL(logger_, "ApplicationManager")
 
 namespace {
-struct IsCommandIdEq {
-  IsCommandIdEq(const std::string& key, uint32_t id)
+struct CommandIdComparator {
+  CommandIdComparator(const std::string& key, uint32_t id)
       : key_(key), target_id_(id) {}
 
   bool operator()(const CommandsMap::value_type& new_command) const {
     smart_objects::SmartObject& command = *(new_command.second);
-    return command[key_].asUInt() == target_id_;
+    if (command.keyExists(key_)) {
+      return command[key_].asUInt() == target_id_;
+    }
+    return false;
   }
 
  private:
@@ -505,39 +508,40 @@ void DynamicApplicationDataImpl::AddCommand(
   CommandsMap::const_iterator it = commands_.find(internal_id);
   if (commands_.end() == it) {
     commands_[internal_id] = new smart_objects::SmartObject(command);
-    smart_objects::SmartObject& new_command = *(commands_[internal_id]);
     LOG4CXX_DEBUG(logger_,
                   "Command with internal number "
                       << internal_id << " and id "
-                      << new_command[strings::cmd_id].asUInt() << " is added.");
+                      << (*commands_[internal_id])[strings::cmd_id].asUInt()
+                      << " is added.");
   }
 }
 
 void DynamicApplicationDataImpl::RemoveCommand(const uint32_t cmd_id) {
   sync_primitives::AutoLock lock(commands_lock_ptr_);
 
-  IsCommandIdEq is_id_equal(strings::cmd_id, cmd_id);
+  CommandIdComparator is_id_equal(strings::cmd_id, cmd_id);
   CommandsMap::iterator it =
       find_if(commands_.begin(), commands_.end(), is_id_equal);
 
   if (it != commands_.end()) {
+    delete it->second;
     LOG4CXX_DEBUG(logger_,
                   "Command with internal number " << (it->first) << " and id "
                                                   << cmd_id << " is removed.");
-    delete it->second;
     commands_.erase(it);
+
     return;
   }
-  LOG4CXX_DEBUG(logger_,
-                "Command with id " << cmd_id
-                                   << " is not found. Removal skipped.");
+  LOG4CXX_WARN(logger_,
+               "Command with id " << cmd_id
+                                  << " is not found. Removal skipped.");
 }
 
 smart_objects::SmartObject* DynamicApplicationDataImpl::FindCommand(
     const uint32_t cmd_id) {
   sync_primitives::AutoLock lock(commands_lock_ptr_);
 
-  IsCommandIdEq is_id_equal(strings::cmd_id, cmd_id);
+  CommandIdComparator is_id_equal(strings::cmd_id, cmd_id);
   CommandsMap::const_iterator it =
       find_if(commands_.begin(), commands_.end(), is_id_equal);
 

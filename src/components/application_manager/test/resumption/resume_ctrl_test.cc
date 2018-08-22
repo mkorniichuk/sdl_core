@@ -354,10 +354,13 @@ TEST_F(ResumeCtrlTest, StartResumption_AppWithCommands) {
   ON_CALL(*mock_app_, help_prompt_manager())
       .WillByDefault(ReturnRef(*mock_help_prompt_manager_));
 
-  for (uint32_t i = 0; i < count_of_commands; ++i) {
-    EXPECT_CALL(*mock_app_, AddCommand(i + 1, test_application_commands[i]));
-    EXPECT_CALL(*mock_help_prompt_manager_,
-                OnVrCommandAdded(i, test_application_commands[i], true));
+  for (uint32_t cmd_id = 0, internal_id = 1; cmd_id < count_of_commands;
+       ++cmd_id, ++internal_id) {
+    EXPECT_CALL(*mock_app_,
+                AddCommand(internal_id, test_application_commands[cmd_id]));
+    EXPECT_CALL(
+        *mock_help_prompt_manager_,
+        OnVrCommandAdded(cmd_id, test_application_commands[cmd_id], true));
   }
 
   smart_objects::SmartObjectList requests;
