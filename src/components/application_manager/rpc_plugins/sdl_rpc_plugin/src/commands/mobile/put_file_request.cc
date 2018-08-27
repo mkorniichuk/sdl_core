@@ -311,9 +311,12 @@ void PutFileRequest::SendOnPutFileNotification() {
   message[strings::msg_params][strings::app_id] = connection_key();
   message[strings::msg_params][strings::sync_file_name] = sync_file_name_;
   message[strings::msg_params][strings::offset] = offset_;
-  if (0 == offset_) {
-    message[strings::msg_params][strings::file_size] =
-        (*message_)[strings::msg_params][strings::length];
+  if ((*message_)[strings::msg_params].keyExists(strings::offset)) {
+    message[strings::msg_params][strings::offset] = offset_;
+    if (0 == offset_ && (*message_)[strings::msg_params].keyExists(strings::length)) {
+      message[strings::msg_params][strings::file_size] =
+          (*message_)[strings::msg_params][strings::length];
+    }
   }
   message[strings::msg_params][strings::length] = length_;
   message[strings::msg_params][strings::persistent_file] = is_persistent_file_;
