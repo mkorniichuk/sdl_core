@@ -65,6 +65,7 @@ set(LIBRARIES
   MOBILE_API
   ProtocolLibrary
   Utils
+  socket
 )
 
 if(EXTENDED_MEDIA_MODE)

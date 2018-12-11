@@ -35,6 +35,8 @@ project (${PROJECT})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/tools/cmake/modules/")
 
 include(${CMAKE_SOURCE_DIR}/tools/cmake/helpers/platform.cmake)
+set(THIRD_PARTY_INSTALL_PREFIX "$ENV{THIRD_PARTY_INSTALL_PREFIX}")
+set(CMAKE_FIND_ROOT_PATH "${CMAKE_FIND_ROOT_PATH}" "$ENV{THIRD_PARTY_INSTALL_PREFIX}")
 
 #Jenkins integration section
 #dont modify this section if you dont know details about integration with Jenkins!!!
@@ -56,6 +58,11 @@ option(USE_GOLD_LD "Use gold linker intead of GNU linker" ON)
 option(USE_CCACHE "Turn on ccache usage" ON)
 option(USE_DISTCC "Turn on distributed build_usage" OFF)
 
+if(UNIX AND QNXNTO)
+  set(BUILD_BT_SUPPORT OFF)
+  set(BUILD_USB_SUPPORT OFF)
+endif()
+  
 set (EXTENDED_POLICY "PROPRIETARY" CACHE STRING "Policy mode (PROPRIETARY, HTTP or EXTERNAL_PROPRIETARY)")
 set_property(CACHE EXTENDED_POLICY PROPERTY STRINGS PROPRIETARY HTTP EXTERNAL_PROPRIETARY)
 if(EXTENDED_POLICY STREQUAL "")

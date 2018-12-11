@@ -43,6 +43,8 @@ BOOTSTRAP
 
 if(${CMAKE_SYSTEM_PROCESSOR} MATCHES ".*aarch64")
   set(ADDRESS_MODEL "64")
+elseif(${CMAKE_SYSTEM_PROCESSOR} MATCHES ".*x86_64")  
+  set(ADDRESS_MODEL "32_64")
 else()  
   set(ADDRESS_MODEL "32")
 endif ()
