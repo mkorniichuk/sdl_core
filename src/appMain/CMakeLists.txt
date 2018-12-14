@@ -118,7 +118,6 @@ set(LIBRARIES
   ConfigProfile
   Resumption
   SystemTimeLibrary
-  stdc++
 )
 
 if(UNIX AND NOT QNXNTO)
