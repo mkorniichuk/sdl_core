@@ -65,8 +65,11 @@ set(LIBRARIES
   MOBILE_API
   ProtocolLibrary
   Utils
-  socket
 )
+
+if(${OS} STREQUAL "qnx")
+  list(APPEND LIBRARIES socket)
+endif()
 
 if(EXTENDED_MEDIA_MODE)
   find_package(Gstreamer-1.0 REQUIRED)
