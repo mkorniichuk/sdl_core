@@ -103,8 +103,6 @@ SQLQuery::SQLQuery(SQLDatabase* db)
 
 SQLQuery::~SQLQuery() {
   Finalize();
-  db_->Close();
-  delete db_;
 }
 
 bool SQLQuery::Prepare(const std::string& query) {
