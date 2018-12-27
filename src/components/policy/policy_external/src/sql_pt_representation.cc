@@ -38,7 +38,11 @@
 
 #include "utils/logger.h"
 #include "utils/date_time.h"
+#if __QNX__
+#include "utils/qdb_wrapper/sql_database.h"
+#else  // __QNX__
 #include "utils/sqlite_wrapper/sql_database.h"
+#endif // __QNX__
 #include "utils/file_system.h"
 #include "utils/gen_hash.h"
 #include "policy/sql_pt_representation.h"

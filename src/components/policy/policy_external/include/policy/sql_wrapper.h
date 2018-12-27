@@ -34,7 +34,7 @@
 #define SRC_COMPONENTS_POLICY_POLICY_EXTERNAL_INCLUDE_POLICY_SQL_WRAPPER_H_
 
 #if __QNX__
-#include "utils/qdb_wrapper/sql_database_impl.h"
+#include "utils/qdb_wrapper/sql_database.h"
 #include "utils/qdb_wrapper/sql_query.h"
 #else  // __QNX__
 // TODO it can be error root cause AHrytsesevich

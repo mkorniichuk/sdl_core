@@ -34,8 +34,13 @@
 #define SRC_COMPONENTS_APPLICATION_MANAGER_INCLUDE_APPLICATION_MANAGER_RESUMPTION_RESUMPTION_DATA_DB_H_
 #include "application_manager/resumption/resumption_data.h"
 
+#ifdef __QNX__
+#include "utils/qdb_wrapper/sql_database.h"
+#include "utils/qdb_wrapper/sql_query.h"
+#else  // linux
 #include "utils/sqlite_wrapper/sql_database.h"
 #include "utils/sqlite_wrapper/sql_query.h"
+#endif
 
 namespace resumption {
 
