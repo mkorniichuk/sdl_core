@@ -31,7 +31,7 @@
  */
 
 #include <cstring>
-#include "qdb_wrapper/sql_database.h"
+#include "sql/sql_database.h"
 #include "utils/logger.h"
 
 namespace utils {
@@ -50,7 +50,7 @@ bool SQLDatabase::Open() {
   sync_primitives::AutoLock auto_lock(conn_lock_);
   if (conn_)
     return true;
-  conn_ = qdb_connect(get_path().c_str(), 0);
+  conn_ = qdb_connect(db_name_.c_str(), 0);
   if (conn_ == NULL) {
     error_ = Error::ERROR;
     return false;
@@ -112,7 +112,7 @@ void SQLDatabase::set_path(const std::string& path) {
   path_ = path;
 }
 
- std::string SQLDatabase::get_path() const {
+std::string SQLDatabase::get_path() const {
   return path_ + db_name_;
 }
 
