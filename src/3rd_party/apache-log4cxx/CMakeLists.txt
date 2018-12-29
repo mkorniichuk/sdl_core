@@ -31,7 +31,6 @@
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR})
 
 set(LOG4CXX_SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/apache-log4cxx-0.10.0)
-set(LOG4CXX_FIND_VERSION 1.5.0)
 set(LOG4CXX_USE_SYSTEM_PATH 0)
 find_package(Log4cxx)
 
@@ -42,13 +41,16 @@ if ((LOG4CXX_FOUND OR NO_REBUILD_3RD_PARTY_LOGGER) AND
 else()
   message(STATUS "Did not found Log4CXX. Installing Log4CXX")
 
+  set(NO_REBUILD_3RD_PARTY_LOGGER OFF PARENT_SCOPE)
+  set(FORCE_3RD_PARTY_LOGGER ON PARENT_SCOPE)
+
   set(LOG4CXX_BUILD_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/apache-log4cxx-build)
   file(MAKE_DIRECTORY
     ${LOG4CXX_BUILD_DIRECTORY}
   )
 
-  SET(APR_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/../apr/apr-build)
-  SET(APR_UTIL_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/../apr-util/apr-util-build)
+  set(APR_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/../apr/apr-build)
+  set(APR_UTIL_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/../apr-util/apr-util-build)
 
   set(LOG4CXX_SOURCE_INCLUDE_DIRECTORY ${LOG4CXX_SOURCE_DIRECTORY}/src/main/include)
   set(LOG4CXX_BUILD_INCLUDE_DIRECTORY ${LOG4CXX_BUILD_DIRECTORY}/src/main/include)
@@ -58,16 +60,16 @@ else()
 
   include(${TARGET_PLATFORM})
 
-  add_custom_command(OUTPUT ${LOG4CXX_LIBS_DIRECTORY}/liblog4cxx.so
+  add_custom_target(liblog4cxx ALL make
+    DEPENDS ${LOG4CXX_BUILD_DIRECTORY}/Makefile
+    WORKING_DIRECTORY ${LOG4CXX_BUILD_DIRECTORY}
+  )
+
+  add_custom_command(TARGET liblog4cxx POST_BUILD
     COMMAND /bin/bash -c "bash ${CMAKE_CURRENT_SOURCE_DIR}/helpers.sh \
       AppendCommitHash \
       ${LOG4CXX_SOURCE_DIRECTORY} \
       ${LOG4CXX_LIBS_DIRECTORY}"
-  )
-
-  add_custom_target(liblog4cxx ALL make
-    DEPENDS ${LOG4CXX_BUILD_DIRECTORY}/Makefile ${LOG4CXX_LIBS_DIRECTORY}/liblog4cxx.so
-    WORKING_DIRECTORY ${LOG4CXX_BUILD_DIRECTORY}
   )
 
   install(

@@ -10,15 +10,17 @@ set(PACKAGE_VERSION "2.1.0")
 set(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 set(PACKAGE_TARNAME "${PACKAGE_NAME}")
 
-option(BUILD_tools "build the xmlwf tool for expat library" OFF)
-option(BUILD_examples "build the examples for expat library" OFF)
-option(BUILD_tests "build the tests for expat library" OFF)
-option(BUILD_shared "build a shared expat library" ON)
+option(EXPAT_BUILD_tools "build the xmlwf tool for expat library" OFF)
+option(EXPAT_BUILD_examples "build the examples for expat library" OFF)
+option(EXPAT_BUILD_tests "build the tests for expat library" OFF)
+option(EXPAT_BUILD_shared "build a shared expat library" ON)
+mark_as_advanced(EXPAT_BUILD_tools EXPAT_EXPAT_BUILD_examples EXPAT_EXPAT_BUILD_tests EXPAT_EXPAT_BUILD_shared)
 
 # configuration options
 set(XML_CONTEXT_BYTES 1024 CACHE STRING "Define to specify how much context to retain around the current parse point")
 option(XML_DTD "Define to make parameter entity parsing functionality available" ON)
 option(XML_NS "Define to make XML Namespaces functionality available" ON)
+mark_as_advanced(XML_DTD XML_NS)
 
 if(XML_DTD)
     set(XML_DTD 1)
@@ -31,9 +33,9 @@ else(XML_NS)
     set(XML_NS 0)
 endif(XML_NS)
 
-if(BUILD_tests)
+if(EXPAT_BUILD_tests)
     enable_testing()
-endif(BUILD_tests)
+endif(EXPAT_BUILD_tests)
 
 include(ConfigureChecks.cmake)
 
@@ -56,15 +58,15 @@ set(expat_SRCS
     lib/xmltok_ns.c
 )
 
-if(WIN32 AND BUILD_shared)
+if(WIN32 AND EXPAT_BUILD_shared)
     set(expat_SRCS ${expat_SRCS} lib/libexpat.def)
-endif(WIN32 AND BUILD_shared)
+endif(WIN32 AND EXPAT_BUILD_shared)
 
-if(BUILD_shared)
+if(EXPAT_BUILD_shared)
     set(_SHARED SHARED)
-else(BUILD_shared)
+else(EXPAT_BUILD_shared)
     set(_SHARED STATIC)
-endif(BUILD_shared)
+endif(EXPAT_BUILD_shared)
 
 add_library(expat ${_SHARED} ${expat_SRCS})
 
@@ -78,7 +80,7 @@ set(libdir "\${prefix}/lib")
 set(includedir "\${prefix}/include")
 configure_file(expat.pc.in ${CMAKE_CURRENT_BINARY_DIR}/expat.pc)
 
-if(BUILD_tools AND NOT WINCE)
+if(EXPAT_BUILD_tools AND NOT WINCE)
     set(xmlwf_SRCS
         xmlwf/xmlwf.c
         xmlwf/xmlfile.c
@@ -90,17 +92,17 @@ if(BUILD_tools AND NOT WINCE)
     target_link_libraries(xmlwf expat)
     install(TARGETS xmlwf DESTINATION bin)
     install(FILES doc/xmlwf.1 DESTINATION share/man/man1)
-endif(BUILD_tools AND NOT WINCE)
+endif(EXPAT_BUILD_tools AND NOT WINCE)
 
-if(BUILD_examples)
+if(EXPAT_BUILD_examples)
     add_executable(elements examples/elements.c)
     target_link_libraries(elements expat)
 
     add_executable(outline examples/outline.c)
     target_link_libraries(outline expat)
-endif(BUILD_examples)
+endif(EXPAT_BUILD_examples)
 
-if(BUILD_tests)
+if(EXPAT_BUILD_tests)
     ## these are unittests that can be run on any platform
     add_executable(runtests tests/runtests.c tests/chardata.c tests/minicheck.c)
     target_link_libraries(runtests expat)
@@ -109,4 +111,4 @@ if(BUILD_tests)
     add_executable(runtestspp tests/runtestspp.cpp tests/chardata.c tests/minicheck.c)
     target_link_libraries(runtestspp expat)
     add_test(runtestspp runtestspp)
-endif(BUILD_tests)
+endif(EXPAT_BUILD_tests)

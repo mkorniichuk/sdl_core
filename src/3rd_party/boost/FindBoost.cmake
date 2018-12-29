@@ -115,66 +115,60 @@ unset(_Boost_LIB_SUFFIX)
 
 find_path(BOOST_FILESYSTEM_INCLUDE
   NAMES
-    filesystem.hpp
+    boost/filesystem.hpp
   PATHS
     ${3RD_PARTY_INSTALL_PREFIX}
   PATH_SUFFIXES
     include
-    include/boost
   NO_DEFAULT_PATH
   NO_CMAKE_FIND_ROOT_PATH
 )
 if (BOOST_USE_SYSTEM_PATH)
 find_path(BOOST_FILESYSTEM_INCLUDE
   NAMES
-    filesystem.hpp
+    boost/filesystem.hpp
   PATH_SUFFIXES
     include
-    include/boost
 )
 endif()
 message(STATUS "Boost: filesystem.hpp => ${BOOST_FILESYSTEM_INCLUDE}")
 
 find_path(BOOST_DATE_TIME_INCLUDE
   NAMES
-    date_time.hpp
+    boost/date_time.hpp
   PATHS
     ${3RD_PARTY_INSTALL_PREFIX}
   PATH_SUFFIXES
     include
-    include/boost
   NO_DEFAULT_PATH
   NO_CMAKE_FIND_ROOT_PATH
 )
 if (BOOST_USE_SYSTEM_PATH)
 find_path(BOOST_DATE_TIME_INCLUDE
   NAMES
-    date_time.hpp
+    boost/date_time.hpp
   PATH_SUFFIXES
     include
-    include/boost
 )
 endif()
 message(STATUS "Boost: date_time.hpp => ${BOOST_DATE_TIME_INCLUDE}")
 
 find_path(BOOST_THREAD_INCLUDE
   NAMES
-    thread.hpp
+    boost/thread.hpp
   PATHS
     ${3RD_PARTY_INSTALL_PREFIX}
   PATH_SUFFIXES
     include
-    include/boost
   NO_DEFAULT_PATH
   NO_CMAKE_FIND_ROOT_PATH
 )
 if (BOOST_USE_SYSTEM_PATH)
 find_path(BOOST_THREAD_INCLUDE
   NAMES
-    thread.hpp
+    boost/thread.hpp
   PATH_SUFFIXES
     include
-    include/boost
 )
 endif()
 message(STATUS "Boost: thread.hpp => ${BOOST_THREAD_INCLUDE}")
@@ -218,7 +212,7 @@ if (BOOST_SYSTEM_LIBRARY AND
   # Headers version check
   ###########################
 
-  file(STRINGS "${BOOST_FILESYSTEM_INCLUDE}/version.hpp" _boost_VERSION_HPP_CONTENTS REGEX "#define BOOST_VERSION ")
+  file(STRINGS "${BOOST_FILESYSTEM_INCLUDE}/boost/version.hpp" _boost_VERSION_HPP_CONTENTS REGEX "#define BOOST_VERSION ")
   string(REGEX MATCH "#define BOOST_VERSION ([0-9]+)" _Boost_VERSION ${_boost_VERSION_HPP_CONTENTS})
   unset(_boost_VERSION_HPP_CONTENTS)
 

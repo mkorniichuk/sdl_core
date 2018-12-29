@@ -39,7 +39,11 @@ if ((APU_FOUND OR NO_REBUILD_3RD_PARTY_LOGGER) AND
 
     add_custom_target(apr-util)
 else()
-  message(STATUS "Did not found Apr Util. Installing Apr Util")
+  if (APU_FOUND AND FORCE_3RD_PARTY_LOGGER)
+    message(WARNING "Apr Util found but has to be reinstalled.")
+  else()
+    message(STATUS "Did not found Apr Util. Installing Apr Util")
+  endif()
   set(APR_UTIL_SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/apr-util-1.5.3)
   set(APR_UTIL_BUILD_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/apr-util-build)
 

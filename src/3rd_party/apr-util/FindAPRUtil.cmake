@@ -20,8 +20,6 @@ else()
   set(_apr_util_lib_suffix "-1")
 endif()
 
-message(STATUS "==========================${_apr_util_lib_suffix}")
-
 ###########################
 # Looking for Apr libs
 ###########################

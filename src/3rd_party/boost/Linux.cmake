@@ -1,7 +1,7 @@
 include(ExternalProject)
 
 set(CONFIGURE_COMMAND
-  ./bootstrap.sh --with-libraries=system,thread,date_time,filesystem --prefix=${3RD_PARTY_INSTALL_PREFIX})
+  ./bootstrap.sh --with-libraries=system,thread,date_time,filesystem,atomic --prefix=${3RD_PARTY_INSTALL_PREFIX})
 
 set(BUILD_COMMAND
   ./b2)

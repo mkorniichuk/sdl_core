@@ -43,7 +43,7 @@ set(LIBRARIES
 add_library(appenders SHARED ${SOURCES})
 target_link_libraries(appenders ${LIBRARIES})
 
-add_dependencies(appenders install-3rd_party_logger)
+add_dependencies(appenders liblog4cxx)
 
 install(TARGETS appenders
   DESTINATION bin

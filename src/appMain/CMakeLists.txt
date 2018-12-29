@@ -69,13 +69,14 @@ include_directories(
   ${OPENSSL_INCLUDE_DIRECTORY}
   ${default_media_inc}
   ${MESSAGE_BROKER_INCLUDE_DIRECTORY}
-  ${BOOST_INCLUDE_DIR}
+  ${BOOST_INCLUDE_DIRECTORY}
   ${CMAKE_SOURCE_DIR}/src
 )
 
 # Create object library
 add_library("LowVoltageHandlerObjLibrary" OBJECT ${CMAKE_CURRENT_SOURCE_DIR}/low_voltage_signals_handler.cc
 )
+add_dependencies("LowVoltageHandlerObjLibrary" liblog4cxx)
 
 set (SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/main.cc
@@ -127,14 +128,11 @@ elseif(QNXNTO)
   list(APPEND LIBRARIES iconv)
 endif()
 
-if (BUILD_BT_SUPPORT)
-  if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  if (BUILD_BT_SUPPORT)
     list(APPEND LIBRARIES bluetooth)
   endif()
-endif()
-
-if (BUILD_USB_SUPPORT)
-  if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  if (BUILD_USB_SUPPORT)
     list(APPEND LIBRARIES libusb-1.0.so)
   endif()
 endif()
@@ -153,7 +151,6 @@ add_executable(${PROJECT} ${SOURCES})
 
 if (HMIADAPTER STREQUAL "messagebroker")
   add_dependencies(${PROJECT} Boost)
-  GET_PROPERTY(BOOST_LIBS_DIRECTORY GLOBAL PROPERTY GLOBAL_BOOST_LIBS)
   list(APPEND LIBRARIES boost_system -L${BOOST_LIBS_DIRECTORY})
 endif()
 
@@ -170,7 +167,7 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/sdl_preloaded_pt.json DESTINATION ${CMAKE_
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/sample_policy_manager.py DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/start.sh DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/start_external_proprietary.sh DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-if (CMAKE_SYSTEM_NAME STREQUAL "QNX")
+if (TARGET_PLATFORM STREQUAL "QNX")
   file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/init_policy.sh DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 endif ()
 
@@ -200,7 +197,7 @@ if (${QT_HMI})
   set(main_qml "hmi/MainWindow.qml")
   set(plugins_dir "hmi/plugins")
 
-  if (CMAKE_SYSTEM_NAME STREQUAL "QNX")
+  if (TARGET_PLATFORM STREQUAL "QNX")
     set(start_command "./start-qml.sh")
     set(command_arguments "${main_qml} ${plugins_dir}")
   else ()
@@ -230,7 +227,7 @@ install(
 )
 
 if (${QT_HMI})
-  if (CMAKE_SYSTEM_NAME STREQUAL "QNX")
+  if (TARGET_PLATFORM STREQUAL "QNX")
     install(FILES start-qml.sh DESTINATION bin
       PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
         GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
@@ -239,7 +236,7 @@ if (${QT_HMI})
     PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
       GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 endif ()
-if (CMAKE_SYSTEM_NAME STREQUAL "QNX")
+if (TARGET_PLATFORM STREQUAL "QNX")
   install(FILES init_policy.sh DESTINATION bin
     PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ
       GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)

@@ -47,7 +47,7 @@ include_directories (
     ${LOG4CXX_INCLUDE_DIRECTORY}
     ${COMPONENTS_DIR}/hmi_message_handler/include
     ${COMPONENTS_DIR}/hmi_message_handler/src
-    ${BOOST_INCLUDE_DIR}
+    ${BOOST_INCLUDE_DIRECTORY}
 )
 
 set(PATHS
@@ -63,8 +63,11 @@ collect_sources(SOURCES "${PATHS}" "${EXCLUDE_PATHS}")
 
 set(LIBRARIES
   Utils
-  ${RTLIB}
 )
+
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  list(APPEND LIBRARIES rt)
+endif()
 
 add_library("HMIMessageHandler" ${SOURCES})
 
@@ -79,7 +82,7 @@ if(ENABLE_LOG)
 endif()
 
 # Tests temporary are inactivated. For details please check
-# Readme.txt in test directory of hmi_message_handler 
+# Readme.txt in test directory of hmi_message_handler
 
 if(BUILD_TESTS)
   add_subdirectory(test)

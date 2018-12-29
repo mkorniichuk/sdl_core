@@ -1,5 +1,3 @@
-#set( CMAKE_VERBOSE_MAKEFILE on )
-
 include_directories(
   ${CMAKE_SOURCE_DIR}/src/components/rpc_base/include/
   ${CMAKE_SOURCE_DIR}/src/components/utils/include/

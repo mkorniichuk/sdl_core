@@ -15,12 +15,11 @@ set (Log4cxx_FOUND 1)
 
 find_path(LOG4CXX_INCLUDE
   NAMES
-    log4cxx.h
+    log4cxx/log4cxx.h
   PATHS
     ${3RD_PARTY_INSTALL_PREFIX}
   PATH_SUFFIXES
     include
-    include/log4cxx
   NO_DEFAULT_PATH
   NO_CMAKE_FIND_ROOT_PATH
 )
@@ -72,9 +71,9 @@ if (LOG4CXX_INCLUDE AND LOG4CXX_LIBRARY)
             IsActualVersion \
             ${LOG4CXX_SOURCE_DIRECTORY} \
             ${LOG4CXX_LIBRARY_DIR}"
-    OUTPUT_VARIABLE IS_LOGGER_ACTUAL
+    RESULT_VARIABLE IS_LOGGER_ACTUAL
   )
-  if (NOT IS_LOGGER_ACTUAL)
+  if (NOT ${IS_LOGGER_ACTUAL})
     message(WARNING "Detected version of Log4CXX is too old.")
     set(Log4cxx_FOUND 0)
   endif()
@@ -85,10 +84,10 @@ endif()
 
 if (Log4cxx_FOUND)
   set(LOG4CXX_FOUND ${Log4cxx_FOUND} CACHE INTERNAL "Log4cxx found" FORCE)
-  set(LOG4CXX_INCLUDE_DIR ${LOG4CXX_INCLUDE} CACHE INTERNAL "Log4cxx include path" FORCE)
-  set(LOG4CXX_LIBRARY_DIR ${LOG4CXX_LIBRARY_DIR} CACHE INTERNAL "Log4cxx library path" FORCE)
+  set(LOG4CXX_INCLUDE_DIRECTORY ${LOG4CXX_INCLUDE} CACHE INTERNAL "Installation path of Log4CXX headers" FORCE)
+  set(LOG4CXX_LIBS_DIRECTORY ${LOG4CXX_LIBRARY_DIR} CACHE INTERNAL "Installation path of Log4CXX libraries" FORCE)
 
-  message(STATUS "Found Log4cxx: ${LOG4CXX_INCLUDE_DIR}")
+  message(STATUS "Found Log4cxx: ${LOG4CXX_INCLUDE_DIRECTORY}")
 endif()
 
 mark_as_advanced(LOG4CXX_INCLUDE LOG4CXX_LIBRARY Log4cxx_FOUND)

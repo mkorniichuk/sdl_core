@@ -38,7 +38,6 @@ include_directories (
   ${JSONCPP_INCLUDE_DIRECTORY}
   ${COMPONENTS_DIR}/utils/include/
   ${COMPONENTS_DIR}/config_profile/include
-  ${LOG4CXX_INCLUDE_DIRECTORY}
 )
 
 set(POLICY_TABLE_PATHS

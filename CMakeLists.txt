@@ -37,6 +37,10 @@ set (PROJECT smartDeviceLinkCore)
 project (${PROJECT})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/tools/cmake/modules/")
 
+if (NOT DEFINED TARGET_PLATFORM)
+  set(TARGET_PLATFORM Linux)
+endif()
+
 include(${CMAKE_SOURCE_DIR}/tools/cmake/helpers/platform.cmake)
 set(THIRD_PARTY_INSTALL_PREFIX "$ENV{THIRD_PARTY_INSTALL_PREFIX}")
 set(CMAKE_FIND_ROOT_PATH "${CMAKE_FIND_ROOT_PATH}" "$ENV{THIRD_PARTY_INSTALL_PREFIX}")
@@ -149,19 +153,6 @@ if (SECURITY_OPTION)
   endif()
 endif()
 
-set(objcopy "objcopy")
-if (OS_TYPE_OPTION)
-  if (${OS_TYPE_OPTION} STREQUAL "QNX")
-    message(STATUS "Jenkins integration: set build process for QNX")
-    #do not use include after project() command.
-    #Such usecase results in infinite cycle of reinitialization of compiler and other variables
-    INCLUDE("./qnx_6.5.0_linux_x86.cmake")
-    set(objcopy "nto${ARCH_TYPE_OPTION}-objcopy")
-    #tests are not supported yet for QNX build
-    set (BUILD_TESTS OFF)
-  endif()
-endif()
-
 #Jenkins integration section end
 
 #Deliver Build Configuration
@@ -234,10 +225,6 @@ add_custom_target(genivi-tarball
   COMMAND tar -cz -C /tmp/GENIVI -f ${CMAKE_BINARY_DIR}/genivi.tar.gz .
 )
 
-project (${PROJECT})
-
-#ADD_DEPENDENCIES(${PROJECT} Policy)
-
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
 # Please do not change compiler/linker flags if You do not know how particular
@@ -245,11 +232,13 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR})
 set(ARCHIVE_OUTPUT_DIRECTORY ./bin)
 
-set(CMAKE_CXX_FLAGS "-Wall -Werror -Wuninitialized -Wvla")
-
-if(${CMAKE_SYSTEM_NAME} MATCHES "QNX")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++")
+# Set default cxx_flags (if not defined in toolchain files)
+if (NOT CMAKE_CXX_FLAGS)
+  set(CMAKE_CXX_FLAGS "-Wall -Werror -Wuninitialized -Wvla")
 endif()
+
+set(CMAKE_CXX_FLAGS_RELEASE " -DNDEBUG -s -O2")
+set(CMAKE_CXX_FLAGS_DEBUG   " -DDEBUG -g3 -ggdb3")
 
 if (USE_GOLD_LD)
   execute_process(COMMAND ld -v OUTPUT_VARIABLE result)
@@ -304,9 +293,8 @@ if(ENABLE_GCOV)
   message(STATUS "GCOV enabled")
 endif()
 
-set(CMAKE_CXX_FLAGS_RELEASE " -DNDEBUG -s -O2")
-set(CMAKE_CXX_FLAGS_DEBUG   " -DDEBUG -g3 -ggdb3")
-
+# TODO(AK): check current OS here
+add_definitions(-DOS_POSIX) # see line :360
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
   add_definitions(-DOS_LINUX)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "QNX")
@@ -316,13 +304,11 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "QNX")
   SET(EXTENDED_MEDIA_MODE OFF)
 endif()
 
-
 if (BUILD_USB_SUPPORT)
   add_definitions(-DUSB_SUPPORT)
   find_package(UDev REQUIRED)
   message(STATUS "USB support enabled")
 endif()
-
 
 if (BUILD_BT_SUPPORT)
   add_definitions(-DBLUETOOTH_SUPPORT)
@@ -336,11 +322,8 @@ endif()
 
 if(ENABLE_LOG)
   add_definitions(-DENABLE_LOG)
-  set(install-3rd_party_logger "install-3rd_party_logger")
   message(STATUS "Logger enabled")
 endif()
-
-set(install-bson_c_lib "install-bson_c_lib")
 
 if (TELEMETRY_MONITOR)
   add_definitions(-DTELEMETRY_MONITOR)
@@ -364,9 +347,6 @@ else()
    set(POLICY_GLOBAL_INCLUDE_PATH ${COMPONENTS_DIR}/include/policy/policy_regular/)
    set(POLICY_MOCK_INCLUDE_PATH ${COMPONENTS_DIR}/include/test/policy/policy_regular/)
 endif()
-
-# TODO(AK): check current OS here
-add_definitions(-DOS_POSIX)
 
 if (EXTENDED_MEDIA_MODE)
   add_definitions(-DEXTENDED_MEDIA_MODE)
@@ -405,29 +385,20 @@ include_directories(
 )
 
 # --- 3rd party libs
-add_subdirectory(./src/3rd_party EXCLUDE_FROM_ALL)
+add_subdirectory(./src/3rd_party)
 
 find_package(OpenSSL REQUIRED)
-if(ENABLE_LOG)
-  include_directories ( ${LOG4CXX_INCLUDE_DIRECTORY} )
-endif()
 
 if(ENABLE_SECURITY)
   add_definitions(-DENABLE_SECURITY)
   set(SecurityManagerLibrary SecurityManager)
   set(SecurityManagerIncludeDir ${COMPONENTS_DIR}/security_manager/include)
-  #set(SecurityManagerTestIncludeDir ${CMAKE_SOURCE_DIR}/test/components/security_manager/include)
   message(STATUS "Security enabled")
 endif()
 
 if(ENABLE_HMI_PTU_DECRYPTION)
   add_definitions(-DUSE_HMI_PTU_DECRYPTION)
   message(STATUS "HMI PTU decription enabled")
-endif()
-
-set(RTLIB rt)
-if(CMAKE_SYSTEM_NAME STREQUAL "QNX")
-  set(RTLIB )
 endif()
 
 SET(RPATH_DIRECTORIES

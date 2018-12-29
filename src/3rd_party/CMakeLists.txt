@@ -52,14 +52,14 @@ if(ENABLE_LOG)
   # --- libexpat
   add_subdirectory(expat-2.1.0)
 
+  # --- log4cxx
+  add_subdirectory(apache-log4cxx)
+
   # --- libapr-1
   add_subdirectory(apr)
 
   # --- apr-util
   add_subdirectory(apr-util)
-
-  # --- log4cxx
-  add_subdirectory(apache-log4cxx)
 endif()
 
 add_subdirectory(bson)
@@ -72,7 +72,5 @@ add_custom_target(3rd_party
 
 add_custom_target(install-3rd_party
   make install
-  DEPENDS libbson
-  DEPENDS Boost
   WORKING_DIRECTORY ${3RD_PARTY_BINARY_DIRECTORY}
 )

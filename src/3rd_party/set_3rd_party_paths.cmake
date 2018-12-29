@@ -49,3 +49,4 @@ else()
   endif()
 endif()
 
+message(STATUS "Third party library installation directories: ${3RD_PARTY_INSTALL_PREFIX}, ${3RD_PARTY_INSTALL_PREFIX_ARCH}")

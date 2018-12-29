@@ -46,8 +46,6 @@ list(APPEND test_exec_libraries
   UsageStatistics
   dbms
   Utils
-  dl
-  ${RTLIB}
 )
 
 list(APPEND testSources
@@ -62,7 +60,6 @@ include_directories(${POLICY_DIR}/src/policy/policy_table/table_struct_ext)
 list (APPEND testSources ${POLICY_DIR}/test/sql_pt_ext_representation_test.cc)
 
 if (CMAKE_SYSTEM_NAME STREQUAL "QNX")
-  list(REMOVE_ITEM test_exec_libraries dl)
   # --- Tests for QDB Wrapper
   include_directories(${POLICY_DIR}/src/policy/qdb_wrapper/include)
   list (APPEND testSources
@@ -73,6 +70,7 @@ if (CMAKE_SYSTEM_NAME STREQUAL "QNX")
   file(COPY ${POLICY_DIR}/test/test-qdb.ini DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
   file(COPY ${POLICY_DIR}/test/policy.sql DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 else ()
+  list(APPEND test_exec_libraries dl rt)
   # --- Tests for SQLite Wrapper
   find_package(Sqlite3 REQUIRED)
   include_directories(${POLICY_DIR}/src/policy/sqlite_wrapper/include)

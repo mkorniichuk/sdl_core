@@ -4,7 +4,7 @@ set(BOOST_AGL_PROJECT_CONFIG_JAM
   "using gcc : agl : x86_64-agl-linux-gcc  -march=corei7 -mtune=corei7 -mfpmath=sse -msse4.2 --sysroot=/opt/agl-sdk/6.0.2-corei7-64/sysroots/corei7-64-agl-linux : ")
 
 set(CONFIGURE_COMMAND
-  CC=\"\" ./bootstrap.sh --with-libraries=system,thread,date_time,filesystem --prefix=${3RD_PARTY_INSTALL_PREFIX} COMMAND echo ${BOOST_AGL_PROJECT_CONFIG_JAM} $<SEMICOLON> >> ./project-config.jam)
+  CC=\"\" ./bootstrap.sh --with-libraries=system,thread,date_time,filesystem,atomic --prefix=${3RD_PARTY_INSTALL_PREFIX} COMMAND echo ${BOOST_AGL_PROJECT_CONFIG_JAM} $<SEMICOLON> >> ./project-config.jam)
 
 set(BUILD_COMMAND
   ./b2 toolset=gcc-agl cxxflags=${CMAKE_CXX_FLAGS})
