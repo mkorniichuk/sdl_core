@@ -1,4 +1,4 @@
-# Copyright (c) 2014, Ford Motor Company
+# Copyright (c) 2018, Ford Motor Company
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,27 +28,29 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-set(APR_SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../apr-1.5.0)
-set(APR_BUILD_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../apr-build)
-
-set(APR_INCLUDE_DIRECTORY ${APR_SOURCE_DIRECTORY}/include)
-
-set(APR_LIBS_DIRECTORY ${APR_BUILD_DIRECTORY}/.libs)
-
-file(MAKE_DIRECTORY
-  ${APR_BUILD_DIRECTORY}/include/private
-  ${APR_SOURCE_DIRECTORY}/include/private
-)
-
-file(COPY ${APR_SOURCE_DIRECTORY}/tools/gen_test_char.c
-  DESTINATION ${APR_BUILD_DIRECTORY}/tools
-)
-
-if(DEFINED CMAKE_TOOLCHAIN_FILE)
-  include("./QNX_APR.cmake")
-else()
-  set(CONFIGURE_FLAGS "")
-endif()
+set(CONFIGURE_FLAGS
+    "--host=${CMAKE_SYSTEM_PROCESSOR}-nto-qnx"
+    "--bindir=${QNX_HOST}/usr/bin/"
+    "ac_cv_file__dev_zero=yes"
+    "ac_cv_func_setpgrp_void=yes"
+    "apr_cv_process_shared_works=yes"
+    "apr_cv_mutex_recursive=yes"
+    "apr_cv_mutex_robust_shared=no"
+    "apr_cv_tcp_nodelay_with_cork=no"
+    "ac_cv_sizeof_struct_iovec=8"
+    "LDFLAGS=-L${QNX_HOST}/usr/lib"
+    "CPPFLAGS=-I${QNX_HOST}/usr/include"
+    "MAKE=${QNX_HOST}/usr/bin/make${HOST_EXECUTABLE_SUFFIX}"
+    "STRIP=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-strip${HOST_EXECUTABLE_SUFFIX}"
+    "OBJDUMP=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-objdump${HOST_EXECUTABLE_SUFFIX}"
+    "OBJCOPY=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-objcopy${HOST_EXECUTABLE_SUFFIX}"
+    "LINKER=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-ld"
+    "NM=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-nm${HOST_EXECUTABLE_SUFFIX}"
+    "RANLIB=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-ranlib${HOST_EXECUTABLE_SUFFIX}"
+    "AR=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-ar${HOST_EXECUTABLE_SUFFIX}"
+    "CXX=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-g++${HOST_EXECUTABLE_SUFFIX}"
+    "CC=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-gcc${HOST_EXECUTABLE_SUFFIX}"
+    )
 
 add_custom_command(OUTPUT ${APR_BUILD_DIRECTORY}/Makefile
   COMMAND CC=${CMAKE_C_COMPILER} ${APR_SOURCE_DIRECTORY}/configure ${CONFIGURE_FLAGS}
@@ -61,23 +63,4 @@ add_custom_command(OUTPUT ${APR_BUILD_DIRECTORY}/include/private/apr_escape_test
   COMMAND make include/private/apr_escape_test_char.h
   COMMAND ${CMAKE_COMMAND} -E copy include/private/apr_escape_test_char.h ${APR_SOURCE_DIRECTORY}/include/private
   WORKING_DIRECTORY ${APR_BUILD_DIRECTORY}
-)
-
-add_custom_target(libapr-1 ALL make
-  DEPENDS ${APR_BUILD_DIRECTORY}/include/private/apr_escape_test_char.h
-  WORKING_DIRECTORY ${APR_BUILD_DIRECTORY}
-)
-
-install(
-  DIRECTORY ${APR_LIBS_DIRECTORY}/
-  DESTINATION ${3RD_PARTY_INSTALL_PREFIX_ARCH}/lib
-  USE_SOURCE_PERMISSIONS
-  FILES_MATCHING PATTERN libapr-1.so*
-)
-
-install(
-  DIRECTORY ${APR_INCLUDE_DIRECTORY}/
-  DESTINATION ${3RD_PARTY_INSTALL_PREFIX}/include
-  USE_SOURCE_PERMISSIONS
-  FILES_MATCHING PATTERN *.h
 )
