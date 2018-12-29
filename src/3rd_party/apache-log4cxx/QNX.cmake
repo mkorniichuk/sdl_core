@@ -28,8 +28,6 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-set(LOG4CXX_SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../apache-log4cxx-0.10.0)
-
 set(CONFIGURE_FLAGS
     "--host=${CMAKE_SYSTEM_PROCESSOR}-nto-qnx"
     "--bindir=${QNX_HOST}/usr/bin/"
@@ -44,7 +42,7 @@ set(CONFIGURE_FLAGS
     "apr_cv_mutex_recursive=yes"
     "apr_cv_mutex_robust_shared=no"
     "apr_cv_tcp_nodelay_with_cork=no"
-    "ac_cv_sizeof_struct_iovec=8"   
+    "ac_cv_sizeof_struct_iovec=8"
     "LDFLAGS=-L${EXPAT_LIBS_DIRECTORY} -L${QNX_HOST}/usr/lib"
     "CXXFLAGS=-std=gnu++11 -stdlib=libstdc++"
     "CPPFLAGS=-I${QNX_HOST}/usr/include"
@@ -58,5 +56,11 @@ set(CONFIGURE_FLAGS
     "AR=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-ar${HOST_EXECUTABLE_SUFFIX}"
     "CXX=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-g++${HOST_EXECUTABLE_SUFFIX}"
     "CC=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-gcc${HOST_EXECUTABLE_SUFFIX}"
-    )
-    
+)
+
+add_custom_command(OUTPUT ${LOG4CXX_BUILD_DIRECTORY}/Makefile
+  COMMAND CC=${CMAKE_C_COMPILER} CXX=${CMAKE_CXX_COMPILER} ${LOG4CXX_SOURCE_DIRECTORY}/configure ${CONFIGURE_FLAGS}
+  DEPENDS libapr-1
+  DEPENDS apr-util
+  WORKING_DIRECTORY ${LOG4CXX_BUILD_DIRECTORY}
+)
