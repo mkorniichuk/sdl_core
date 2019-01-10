@@ -137,7 +137,6 @@ set(LIBRARIES
   ProtocolLibrary
   SmartObjects
   UsageStatistics
-  dl
   formatters
   dbms
   Utils
@@ -146,13 +145,10 @@ set(LIBRARIES
 )
 
 
-if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   list(APPEND LIBRARIES sqlite3)
+  list(APPEND LIBRARIES dl)
 endif ()
-
-if (${CMAKE_SYSTEM_NAME} MATCHES "QNX")
-  list(REMOVE_ITEM LIBRARIES dl)
-endif()
 
 add_library("AMEventEngine" ${EVENT_ENGINE_SOURCES})
 target_link_libraries("AMEventEngine" ${LIBRARIES})

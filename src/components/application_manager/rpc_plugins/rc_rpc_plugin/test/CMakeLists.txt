@@ -61,9 +61,15 @@ set(LIBRARIES
   connectionHandler
   Utils
   jsoncpp
-  gmock_main
-  dl
+  gmock
+  HMI_API
+  MOBILE_API
 )
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  list(APPEND LIBRARIES dl)
+endif()
+
 
 if(ENABLE_LOG)
   list(APPEND LIBRARIES log4cxx -L${LOG4CXX_LIBS_DIRECTORY})

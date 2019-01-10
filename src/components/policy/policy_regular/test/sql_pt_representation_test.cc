@@ -49,7 +49,7 @@
 #include "rpc_base/rpc_base.h"
 
 #include "utils/file_system.h"
-#include "utils/sqlite_wrapper/sql_database.h"
+#include "sql/sql_database.h"
 
 namespace policy_table = rpc::policy_table_interface_base;
 using policy::SQLPTRepresentation;
@@ -1493,11 +1493,13 @@ TEST_F(SQLPTRepresentationTest3, RemoveDB_RemoveDB_ExpectFileDeleted) {
       .WillByDefault(ReturnRef(kAppStorageFolder));
   EXPECT_EQ(::policy::SUCCESS, reps->Init(&policy_settings_));
   EXPECT_EQ(::policy::EXISTS, reps->Init(&policy_settings_));
+#ifndef __QNX__
   std::string path = (reps->db())->get_path();
   // Act
   reps->RemoveDB();
   // Check
   EXPECT_FALSE(file_system::FileExists(path));
+#endif //__QNX__
 }
 
 // TODO {AKozoriz} : Snapshot must have module meta section, but test

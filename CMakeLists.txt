@@ -247,8 +247,7 @@ set(ARCHIVE_OUTPUT_DIRECTORY ./bin)
 
 set(CMAKE_CXX_FLAGS "-Wall -Werror -Wuninitialized -Wvla")
 
-get_os(OS)
-if(${OS} STREQUAL "qnx")
+if(${CMAKE_SYSTEM_NAME} MATCHES "QNX")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++")
 endif()
 

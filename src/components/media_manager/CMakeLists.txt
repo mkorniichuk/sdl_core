@@ -67,7 +67,7 @@ set(LIBRARIES
   Utils
 )
 
-if(${OS} STREQUAL "qnx")
+if (${CMAKE_SYSTEM_NAME} MATCHES "QNX")
   list(APPEND LIBRARIES socket)
 endif()
 

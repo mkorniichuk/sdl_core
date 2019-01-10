@@ -42,12 +42,13 @@ namespace utils {
 namespace dbms {
 
 class SQLQuery;
-
+enum class StorageType {IN_MEMORY};
 /**
  * Represents a connection to a database.
  */
 class SQLDatabase {
  public:
+  explicit SQLDatabase(StorageType storage_type);
   explicit SQLDatabase(const std::string& db_name);
   ~SQLDatabase();
 

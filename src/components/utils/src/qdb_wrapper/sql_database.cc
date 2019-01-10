@@ -39,6 +39,11 @@ namespace dbms {
 
 CREATE_LOGGERPTR_GLOBAL(logger_, "Utils")
 
+const std::string kInMemory = ":memory:";
+
+SQLDatabase::SQLDatabase(StorageType)
+    : conn_(NULL), db_name_(kInMemory), error_(Error::OK) {}
+
 SQLDatabase::SQLDatabase(const std::string& db_name)
     : conn_(NULL), db_name_(db_name), error_(Error::OK) {}
 
