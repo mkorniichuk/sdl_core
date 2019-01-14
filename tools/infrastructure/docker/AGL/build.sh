@@ -47,7 +47,7 @@ mkdir $BUILDDIR && cd $BUILDDIR
 echo "Current working directory: $(pwd)"
 echo "Running cmake..."
 
-RUN "cmake $SDLDIR -DCMAKE_TOOLCHAIN_FILE=$SDLDIR/agl_linux_x86_64.cmake"
+RUN "cmake $SDLDIR -DCMAKE_TOOLCHAIN_FILE=$SDLDIR/toolchains/Toolchain-AGL-Linux-x86_64.cmake"
 
 if [[ $? -ne 0 ]]; then
     LOG "CMake failed. Exiting container..."

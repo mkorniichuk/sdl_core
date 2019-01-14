@@ -4,16 +4,11 @@ RUN apt-get update && apt-get install -yq \
     sudo \
     git \
     wget \
-    vim \
-    gitk \
-    meld \
-    tree \
-    mc \
-    xz-utils \
     g++ \
     make \
     automake \
-    xz-utils
+    xz-utils \
+    python
 
 WORKDIR /opt
 
