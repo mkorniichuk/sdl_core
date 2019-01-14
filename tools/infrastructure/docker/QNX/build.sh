@@ -49,7 +49,7 @@ mkdir $BUILDDIR && cd $BUILDDIR
 echo "Current working directory: $(pwd)"
 echo "Running cmake..."
 
-RUN "cmake $SDLDIR -DCMAKE_TOOLCHAIN_FILE=$SDLDIR/Toolchain-QNX7-ACC-x86.cmake"
+RUN "cmake $SDLDIR -DCMAKE_TOOLCHAIN_FILE=$SDLDIR/toolchains/Toolchain-QNX7-ACC-x86.cmake"
 
 if [[ $? -ne 0 ]]; then
     LOG "CMake failed. Exiting container..."
@@ -87,7 +87,7 @@ LIBS=(libqdb.so.1 \
     libstrm.so.1)
 
 for LIB in ${LIBS[@]}; do
-    RUN "cp $LIB ./"
+    RUN "cp $QNX_TARGET/x86_64/usr/lib/$LIB ./"
 done
 
 #######################################

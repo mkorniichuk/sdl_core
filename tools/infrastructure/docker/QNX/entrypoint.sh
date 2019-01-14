@@ -14,7 +14,7 @@ if [[ $EX_CODE -ne $? ]]; then
     export HOME=/home/developer
 fi
 
-echo "Welcome to developer_agl:build!"
+echo "Welcome to developer_qnx:build!"
 printf "Starting with user developer, UID : $USER_ID \n\n"
 echo   "    You may run sudo without password"
 printf "    You may run GUI applications in container\n\n"

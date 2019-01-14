@@ -1,5 +1,5 @@
 image_name := developer_agl:build
-sdl_core := ~/sdl/sdl_core_dev
+sdl_core := ~/sdl_core
 user_id := $(shell id -u $$USER)
 
 build:

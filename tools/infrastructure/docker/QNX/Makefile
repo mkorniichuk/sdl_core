@@ -1,5 +1,5 @@
 image_name := developer_qnx:build
-sdl_core := ~/sdl/sdl_core_dev
+sdl_core := ~/sdl_core
 sdk_dir := /opt/qnx700
 user_id := $(shell id -u $$USER)
 
