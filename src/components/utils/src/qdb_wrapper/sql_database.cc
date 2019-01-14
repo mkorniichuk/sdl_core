@@ -108,13 +108,5 @@ bool SQLDatabase::Backup() {
   return true;
 }
 
-void SQLDatabase::set_path(const std::string& path) {
-  path_ = path;
-}
-
-std::string SQLDatabase::get_path() const {
-  return path_ + db_name_;
-}
-
 }  // namespace dbms
 }  // namespace utils
