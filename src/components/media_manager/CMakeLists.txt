@@ -67,6 +67,10 @@ set(LIBRARIES
   Utils
 )
 
+if(${OS} STREQUAL "qnx")
+  list(APPEND LIBRARIES socket)
+endif()
+
 if(EXTENDED_MEDIA_MODE)
   find_package(Gstreamer-1.0 REQUIRED)
   find_package(Glib-2.0 REQUIRED)

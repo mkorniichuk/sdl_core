@@ -43,6 +43,9 @@ collect_sources(MOBILE_COMMANDS "${MOBILE_COMMANDS_SOURCE_DIR}")
 collect_sources(VEHICLE_INFO_PLUGIN_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 set(LIBRARIES
+  rpc_base
+  MessageHelper
+  connectionHandler
   HMI_API
   MOBILE_API
   ApplicationManager

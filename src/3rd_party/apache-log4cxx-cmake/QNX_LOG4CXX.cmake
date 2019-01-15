@@ -46,6 +46,7 @@ set(CONFIGURE_FLAGS
     "apr_cv_tcp_nodelay_with_cork=no"
     "ac_cv_sizeof_struct_iovec=8"   
     "LDFLAGS=-L${EXPAT_LIBS_DIRECTORY} -L${QNX_HOST}/usr/lib"
+    "CXXFLAGS=-std=gnu++11 -stdlib=libstdc++"
     "CPPFLAGS=-I${QNX_HOST}/usr/include"
     "MAKE=${QNX_HOST}/usr/bin/make${HOST_EXECUTABLE_SUFFIX}"
     "STRIP=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-strip${HOST_EXECUTABLE_SUFFIX}"

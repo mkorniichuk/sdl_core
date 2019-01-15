@@ -30,19 +30,29 @@
 
 cmake_minimum_required(VERSION 2.8.11)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 set (PROJECT smartDeviceLinkCore)
 project (${PROJECT})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/tools/cmake/modules/")
 
 include(${CMAKE_SOURCE_DIR}/tools/cmake/helpers/platform.cmake)
+set(THIRD_PARTY_INSTALL_PREFIX "$ENV{THIRD_PARTY_INSTALL_PREFIX}")
+set(CMAKE_FIND_ROOT_PATH "${CMAKE_FIND_ROOT_PATH}" "$ENV{THIRD_PARTY_INSTALL_PREFIX}")
 
 #Jenkins integration section
 #dont modify this section if you dont know details about integration with Jenkins!!!
 set (HMI "web" CACHE STRING "HMI type")
 option(EXTENDED_MEDIA_MODE "Turn on and off extended Madia Manager features relates to PulseAudio A2DP and GStreamer" OFF)
 option(BUILD_SHARED_LIBS "Build all libraries as shared (if ON) or static (if OFF)" OFF)
-option(BUILD_BT_SUPPORT "Bluetooth support" ON)
-option(BUILD_USB_SUPPORT "libusb support" ON)
+if(UNIX AND QNXNTO)
+  option(BUILD_BT_SUPPORT "Bluetooth support" OFF)
+  option(BUILD_USB_SUPPORT "libusb support" OFF)
+else()
+  option(BUILD_BT_SUPPORT "Bluetooth support" ON)
+  option(BUILD_USB_SUPPORT "libusb support" ON)
+endif()
 option(BUILD_BACKTRACE_SUPPORT "backtrace support" ON)
 option(BUILD_TESTS "Possibility to build and run tests" OFF)
 option(TELEMETRY_MONITOR "Enable profiling time test util" ON)
@@ -235,7 +245,12 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR})
 set(ARCHIVE_OUTPUT_DIRECTORY ./bin)
 
-set(CMAKE_CXX_FLAGS "-fPIC -std=gnu++0x -Wall -Werror -Wuninitialized -Wvla")
+set(CMAKE_CXX_FLAGS "-Wall -Werror -Wuninitialized -Wvla")
+
+get_os(OS)
+if(${OS} STREQUAL "qnx")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++")
+endif()
 
 if (USE_GOLD_LD)
   execute_process(COMMAND ld -v OUTPUT_VARIABLE result)

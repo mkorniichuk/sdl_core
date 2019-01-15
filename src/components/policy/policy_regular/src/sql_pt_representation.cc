@@ -321,10 +321,12 @@ InitResult SQLPTRepresentation::Init(const PolicySettings* settings) {
 #ifdef BUILD_TESTS
   open_counter_ = 0;
 #endif  // BUILD_TESTS
+#ifndef __QNX__
   std::string path = get_settings().app_storage_folder();
   if (!path.empty()) {
     db_->set_path(path + "/");
   }
+#endif // __QNX__
   if (!db_->Open()) {
     LOG4CXX_ERROR(logger_, "Failed opening database.");
     LOG4CXX_INFO(logger_, "Starting opening retries.");
@@ -1991,7 +1993,9 @@ bool SQLPTRepresentation::SetIsDefault(const std::string& app_id,
 }
 
 void SQLPTRepresentation::RemoveDB() const {
+#ifndef __QNX__
   file_system::DeleteFile(db_->get_path());
+#endif // __QNX__
 }
 
 bool SQLPTRepresentation::IsDBVersionActual() const {

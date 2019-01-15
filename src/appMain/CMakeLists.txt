@@ -120,9 +120,11 @@ set(LIBRARIES
   SystemTimeLibrary
 )
 
-if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if(UNIX AND NOT QNXNTO)
   list(APPEND LIBRARIES pthread)
   list(APPEND LIBRARIES dl)
+elseif(QNXNTO)
+  list(APPEND LIBRARIES iconv)
 endif()
 
 if (BUILD_BT_SUPPORT)

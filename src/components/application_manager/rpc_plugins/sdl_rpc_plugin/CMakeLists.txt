@@ -47,6 +47,9 @@ collect_sources(HMI_COMMANDS "${HMI_COMMANDS_SOURCE_DIR}")
 collect_sources(RPC_PLUGIN_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 set(LIBRARIES
+  rpc_base
+  MessageHelper
+  connectionHandler
   HMI_API
   MOBILE_API
   ApplicationManager

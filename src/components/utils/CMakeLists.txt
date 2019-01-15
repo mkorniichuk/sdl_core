@@ -110,8 +110,22 @@ else ()
     add_subdirectory(./src/sqlite_wrapper)
 endif ()
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
- list(APPEND LIBRARIES dl pthread ${RTLIB})
+if(UNIX AND NOT QNXNTO)
+  list(APPEND LIBRARIES pthread)
+  list(APPEND LIBRARIES dl)
+endif()
+
+if(${OS} STREQUAL "qnx")
+  set(SOURCES ${SOURCES}
+  "${CMAKE_CURRENT_LIST_DIR}/src/threads/async_runner.cc"
+  "${CMAKE_CURRENT_LIST_DIR}/src/threads/pulse_thread_delegate.cc"
+  "${CMAKE_CURRENT_LIST_DIR}/src/threads/thread_validator.cc"
+  "${CMAKE_CURRENT_LIST_DIR}/src/threads/thread_delegate.cc"
+  "${CMAKE_CURRENT_LIST_DIR}/src/threads/thread_posix.cc"
+  "${CMAKE_CURRENT_LIST_DIR}/src/signals_posix.cc"
+  "${CMAKE_CURRENT_LIST_DIR}/src/rwlock_posix.cc"
+  "${CMAKE_CURRENT_LIST_DIR}/src/date_time.cc"
+  )
 endif()
 
 add_library("Utils" ${SOURCES})
