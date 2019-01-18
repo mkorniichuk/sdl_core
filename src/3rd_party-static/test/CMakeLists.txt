@@ -36,7 +36,7 @@ include_directories(
 collect_sources(SOURCES "${CMAKE_CURRENT_SOURCE_DIR}")
 
 set(LIBRARIES
-    gmock 
+    gmock
     jsoncpp
 )
 

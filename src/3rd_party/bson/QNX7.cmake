@@ -30,40 +30,42 @@
 
 include(ExternalProject)
 
-set(BOOST_QNX_PROJECT_CONFIG_JAM
-  "using gcc : nto${CMAKE_SYSTEM_PROCESSOR} : ${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-g++${HOST_EXECUTABLE_SUFFIX} : -L${QNX_HOST}/usr/lib -I${QNX_HOST}/usr/include")
-
-set(BOOST_GCC_JAM
-  sed -Ei "s/case darwin/case *qnx*/g" ./tools/build/src/tools/gcc.jam)
-set(BOOST_FILESYSTEM_OPERATION
-  sed -Ei "s/__SUNPRO_CC/__QNX__/g" ./libs/filesystem/src/operations.cpp)
-set(BOOTSTRAP
-  ./bootstrap.sh --with-toolset=gcc --with-libraries=system,thread,date_time,filesystem --prefix=${3RD_PARTY_INSTALL_PREFIX})
-
-if(${CMAKE_SYSTEM_PROCESSOR} MATCHES ".*aarch64")
-  set(ADDRESS_MODEL "64")
-elseif(${CMAKE_SYSTEM_PROCESSOR} MATCHES ".*x86_64")
-  set(ADDRESS_MODEL "32_64")
-else()
-  set(ADDRESS_MODEL "32")
-endif ()
-
-set(BOOST_BUILD_COMMAND
-  ./b2 address-model=${ADDRESS_MODEL} cxxflags="-stdlib=libstdc++" linkflags="-stdlib=libstdc++" target-os=qnxnto toolset=gcc-nto${CMAKE_SYSTEM_PROCESSOR} define=__QNXNTO__)
-
-ExternalProject_Add(
-  Boost
-  URL http://dl.bintray.com/boostorg/release/1.66.0/source/boost_1_66_0.tar.gz
-  DOWNLOAD_DIR ${BOOST_LIB_SOURCE_DIRECTORY}
-  SOURCE_DIR ${BOOST_LIB_SOURCE_DIRECTORY}
-  CONFIGURE_COMMAND  ${BOOST_GCC_JAM} COMMAND ${BOOST_FILESYSTEM_OPERATION} COMMAND ${BOOTSTRAP}
-  BUILD_COMMAND echo ${BOOST_QNX_PROJECT_CONFIG_JAM} $<SEMICOLON> >> ./project-config.jam COMMAND ${BOOST_BUILD_COMMAND}
-  BUILD_IN_SOURCE true
-  INSTALL_COMMAND ""
+set(CONFIGURE_FLAGS
+    "--host=${CMAKE_SYSTEM_PROCESSOR}-nto-qnx"
+    "--target=qnxnto"
+    "--bindir=${QNX_HOST}/usr/bin/"
+    "--prefix=${3RD_PARTY_INSTALL_PREFIX}"
+    "LDFLAGS=-L${QNX_HOST}/usr/lib"
+    "CPPFLAGS=-I${QNX_HOST}/usr/include"
+    "MAKE=${QNX_HOST}/usr/bin/make${HOST_EXECUTABLE_SUFFIX}"
+    "STRIP=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-strip${HOST_EXECUTABLE_SUFFIX}"
+    "OBJDUMP=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-objdump${HOST_EXECUTABLE_SUFFIX}"
+    "OBJCOPY=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-objcopy${HOST_EXECUTABLE_SUFFIX}"
+    "LINKER=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-ld"
+    "NM=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-nm${HOST_EXECUTABLE_SUFFIX}"
+    "RANLIB=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-ranlib${HOST_EXECUTABLE_SUFFIX}"
+    "AR=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-ar${HOST_EXECUTABLE_SUFFIX}"
+    "CXX=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-g++${HOST_EXECUTABLE_SUFFIX}"
+    "CC=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-gcc${HOST_EXECUTABLE_SUFFIX}"
 )
 
-set(INSTALL_COMMAND
-  "./b2 install > boost_install.log")
+set(CONFIGURE_COMMAND
+  touch aclocal.m4 configure.ac Makefile.am Makefile.in configure config.h.in && ./configure ${CONFIGURE_FLAGS})
+
+
+ExternalProject_Add(
+  libbson
+  GIT_REPOSITORY "http://github.com/smartdevicelink/bson_c_lib.git"
+  GIT_TAG "master"
+  DOWNLOAD_DIR ${BSON_LIB_SOURCE_DIRECTORY}
+  SOURCE_DIR ${BSON_LIB_SOURCE_DIRECTORY}
+  CONFIGURE_COMMAND ${CONFIGURE_COMMAND}
+  BUILD_IN_SOURCE true
+  INSTALL_COMMAND ""
+  UPDATE_COMMAND ""
+)
+
+set(INSTALL_COMMAND "make install")
 
 if (${3RD_PARTY_INSTALL_PREFIX} MATCHES "/usr/local")
   set(INSTALL_COMMAND "sudo ${INSTALL_COMMAND}")
@@ -71,7 +73,7 @@ endif()
 
 install(
   CODE "execute_process(
-    WORKING_DIRECTORY ${BOOST_SOURCE_DIRECTORY}
+    WORKING_DIRECTORY ${BSON_LIB_SOURCE_DIRECTORY}
     COMMAND /bin/bash -c \"${INSTALL_COMMAND}\"
   )"
 )

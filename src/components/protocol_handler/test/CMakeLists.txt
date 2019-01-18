@@ -33,7 +33,6 @@ include(${CMAKE_SOURCE_DIR}/tools/cmake/helpers/sources.cmake)
 include_directories (
   include
   ${COMPONENTS_DIR}/resumption/include
-  ${GMOCK_INCLUDE_DIRECTORY}
   ${COMPONENTS_DIR}/protocol_handler/include
   ${COMPONENTS_DIR}/protocol_handler/test/include
   ${COMPONENTS_DIR}/include/protocol

@@ -1,4 +1,4 @@
-# Copyright (c) 2018, Ford Motor Company
+# Copyright (c) 2014, Ford Motor Company
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -31,13 +31,10 @@
 set(CONFIGURE_FLAGS
     "--host=${CMAKE_SYSTEM_PROCESSOR}-nto-qnx"
     "--bindir=${QNX_HOST}/usr/bin/"
-    "ac_cv_file__dev_zero=yes"
-    "ac_cv_func_setpgrp_void=yes"
-    "apr_cv_process_shared_works=yes"
-    "apr_cv_mutex_recursive=yes"
-    "apr_cv_mutex_robust_shared=no"
-    "apr_cv_tcp_nodelay_with_cork=no"
-    "ac_cv_sizeof_struct_iovec=8"
+    "--prefix=${3RD_PARTY_INSTALL_PREFIX}"
+    "--with-apr=${APR_PREFIX_DIRECTORY}"
+    "--with-expat-source=${EXPAT_SOURCE_DIRECTORY}"
+    "--with-expat-build=${EXPAT_BUILD_DIRECTORY}"
     "LDFLAGS=-L${QNX_HOST}/usr/lib"
     "CPPFLAGS=-I${QNX_HOST}/usr/include"
     "MAKE=${QNX_HOST}/usr/bin/make${HOST_EXECUTABLE_SUFFIX}"
@@ -50,17 +47,11 @@ set(CONFIGURE_FLAGS
     "AR=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-ar${HOST_EXECUTABLE_SUFFIX}"
     "CXX=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-g++${HOST_EXECUTABLE_SUFFIX}"
     "CC=${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-gcc${HOST_EXECUTABLE_SUFFIX}"
-    )
-
-add_custom_command(OUTPUT ${APR_BUILD_DIRECTORY}/Makefile
-  COMMAND CC=${CMAKE_C_COMPILER} ${APR_SOURCE_DIRECTORY}/configure ${CONFIGURE_FLAGS}
-  COMMAND ${CMAKE_COMMAND} -E copy include/apr.h ${APR_SOURCE_DIRECTORY}/include
-  WORKING_DIRECTORY ${APR_BUILD_DIRECTORY}
 )
 
-add_custom_command(OUTPUT ${APR_BUILD_DIRECTORY}/include/private/apr_escape_test_char.h
-  DEPENDS ${APR_BUILD_DIRECTORY}/Makefile
-  COMMAND make include/private/apr_escape_test_char.h
-  COMMAND ${CMAKE_COMMAND} -E copy include/private/apr_escape_test_char.h ${APR_SOURCE_DIRECTORY}/include/private
-  WORKING_DIRECTORY ${APR_BUILD_DIRECTORY}
+add_custom_command(OUTPUT ${APR_UTIL_BUILD_DIRECTORY}/Makefile
+  COMMAND ${APR_UTIL_SOURCE_DIRECTORY}/configure ${CONFIGURE_FLAGS}
+  DEPENDS libapr-1
+  DEPENDS expat
+  WORKING_DIRECTORY ${APR_UTIL_BUILD_DIRECTORY}
 )

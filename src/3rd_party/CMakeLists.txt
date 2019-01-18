@@ -65,6 +65,10 @@ endif()
 add_subdirectory(bson)
 add_subdirectory(boost)
 
+# Please, do not set a dependency on 3rd_party and install-3rd_party
+# this may lead to errors during multithreading build or to
+# a redundant call of `make` or `make install` correspondingly
+# within 3rd_party directory
 add_custom_target(3rd_party
   make
   WORKING_DIRECTORY ${3RD_PARTY_BINARY_DIRECTORY}

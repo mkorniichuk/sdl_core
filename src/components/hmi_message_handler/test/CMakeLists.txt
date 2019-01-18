@@ -48,7 +48,7 @@ set(LIBRARIES
     ApplicationManager
     HMIMessageHandler
     jsoncpp
-	${BROKER_LIBRARIES}
+      ${BROKER_LIBRARIES}
     ConfigProfile
 )
 

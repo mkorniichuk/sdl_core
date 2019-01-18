@@ -41,12 +41,12 @@ using namespace ns_smart_device_link::ns_smart_objects;
 
 class TestHelper : public ::testing::Test {
  protected:
-  void makeMapObject(SmartObject& obj, const int size) const {
+  void makeMapObject(SmartObject& obj, const int8_t size) const {
     char i_key[8], j_key[8], k_key[8], value[8];
 
-    for (int i = 0; i < size; i++)
-      for (int j = 0; j < size; j++)
-        for (int k = 0; k < size; k++) {
+    for (int8_t i = 0; i < size; i++)
+      for (int8_t j = 0; j < size; j++)
+        for (int8_t k = 0; k < size; k++) {
           sprintf(i_key, "i_%d", i);
           sprintf(j_key, "j_%d", j);
           sprintf(k_key, "k_%d", k);
@@ -55,12 +55,12 @@ class TestHelper : public ::testing::Test {
         }
   }
 
-  void checkMapObject(SmartObject& obj, const int size) const {
+  void checkMapObject(SmartObject& obj, const int8_t size) const {
     char i_key[8], j_key[8], k_key[8], value[8];
 
-    for (int i = 0; i < size; i++)
-      for (int j = 0; j < size; j++)
-        for (int k = 0; k < size; k++) {
+    for (int8_t i = 0; i < size; i++)
+      for (int8_t j = 0; j < size; j++)
+        for (int8_t k = 0; k < size; k++) {
           sprintf(i_key, "i_%d", i);
           sprintf(j_key, "j_%d", j);
           sprintf(k_key, "k_%d", k);
@@ -172,7 +172,7 @@ TEST_F(TestHelper, BasicMapTest) {
   ASSERT_EQ("string test", obj["123"]["456"]["789"].asString())
       << "Wrong value for triple map";
 
-  const int size = 32;
+  const int8_t size = 32;
 
   makeMapObject(obj, size);
 
@@ -461,7 +461,7 @@ TEST_F(TestHelper, AssignmentTest) {
   objDst = objSrc;
   ASSERT_TRUE(objDst.asBool()) << "Wrong assignment for bool object";
 
-  const int size = 32;
+  const int8_t size = 32;
   makeMapObject(objSrc, size);
   objDst["a"]["b"] = 4;
   objDst = objSrc;

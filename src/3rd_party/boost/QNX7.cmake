@@ -30,23 +30,34 @@
 
 include(ExternalProject)
 
-set(BOOST_AGL_PROJECT_CONFIG_JAM
-  "using gcc : agl : x86_64-agl-linux-gcc  -march=corei7 -mtune=corei7 -mfpmath=sse -msse4.2 --sysroot=/opt/agl-sdk/6.0.2-corei7-64/sysroots/corei7-64-agl-linux : ")
+set(BOOST_QNX_PROJECT_CONFIG_JAM
+  "using gcc : nto${CMAKE_SYSTEM_PROCESSOR} : ${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-g++${HOST_EXECUTABLE_SUFFIX} : -L${QNX_HOST}/usr/lib -I${QNX_HOST}/usr/include")
 
-set(CONFIGURE_COMMAND
-  CC=\"\" ./bootstrap.sh --with-libraries=system,thread,date_time,filesystem --prefix=${3RD_PARTY_INSTALL_PREFIX} COMMAND echo ${BOOST_AGL_PROJECT_CONFIG_JAM} $<SEMICOLON> >> ./project-config.jam)
+set(BOOST_GCC_JAM
+  sed -Ei "s/case darwin/case *qnx*/g" ./tools/build/src/tools/gcc.jam)
+set(BOOST_FILESYSTEM_OPERATION
+  sed -Ei "s/__SUNPRO_CC/__QNX__/g" ./libs/filesystem/src/operations.cpp)
+set(BOOTSTRAP
+  ./bootstrap.sh --with-toolset=gcc --with-libraries=system,thread,date_time,filesystem --prefix=${3RD_PARTY_INSTALL_PREFIX})
 
-set(BOOST_CXX_FLAGS $ENV{CXXFLAGS})
-set(BUILD_COMMAND
-  ./b2 toolset=gcc-agl cxxflags=${BOOST_CXX_FLAGS})
+if(${CMAKE_SYSTEM_PROCESSOR} MATCHES ".*aarch64")
+  set(ADDRESS_MODEL "64")
+elseif(${CMAKE_SYSTEM_PROCESSOR} MATCHES ".*x86_64")
+  set(ADDRESS_MODEL "32_64")
+else()
+  set(ADDRESS_MODEL "32")
+endif ()
+
+set(BOOST_BUILD_COMMAND
+  ./b2 address-model=${ADDRESS_MODEL} cxxflags="-stdlib=libstdc++" linkflags="-stdlib=libstdc++" target-os=qnxnto toolset=gcc-nto${CMAKE_SYSTEM_PROCESSOR} define=__QNXNTO__)
 
 ExternalProject_Add(
   Boost
   URL http://dl.bintray.com/boostorg/release/1.66.0/source/boost_1_66_0.tar.gz
   DOWNLOAD_DIR ${BOOST_SOURCE_DIRECTORY}
   SOURCE_DIR ${BOOST_SOURCE_DIRECTORY}
-  CONFIGURE_COMMAND ${CONFIGURE_COMMAND}
-  BUILD_COMMAND ${BUILD_COMMAND}
+  CONFIGURE_COMMAND  ${BOOST_GCC_JAM} COMMAND ${BOOST_FILESYSTEM_OPERATION} COMMAND ${BOOTSTRAP}
+  BUILD_COMMAND echo ${BOOST_QNX_PROJECT_CONFIG_JAM} $<SEMICOLON> >> ./project-config.jam COMMAND ${BOOST_BUILD_COMMAND}
   BUILD_IN_SOURCE true
   INSTALL_COMMAND ""
 )

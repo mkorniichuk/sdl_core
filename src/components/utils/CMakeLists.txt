@@ -31,8 +31,6 @@
 include(${CMAKE_SOURCE_DIR}/tools/cmake/helpers/platform.cmake)
 include(${CMAKE_SOURCE_DIR}/tools/cmake/helpers/sources.cmake)
 
-find_package(Sqlite3 REQUIRED)
-
 # dbms
 set(DBMS_PATHS
   ${CMAKE_CURRENT_SOURCE_DIR}/include/utils/sqlite_wrapper
@@ -79,18 +77,21 @@ if(NOT BUILD_BT_SUPPORT)
   )
 endif()
 
-if(NOT CMAKE_SYSTEM_NAME STREQUAL "QNX")
-    list(APPEND EXCLUDE_PATHS
-      pulse_thread_delegate.cc
-    )
-endif()
-
 set(PATHS
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
 collect_sources(SOURCES "${PATHS}" "${EXCLUDE_PATHS}")
+list(APPEND SOURCES
+  "${CMAKE_CURRENT_LIST_DIR}/src/threads/thread_posix.cc"
+  "${CMAKE_CURRENT_LIST_DIR}/src/signals_posix.cc"
+  "${CMAKE_CURRENT_LIST_DIR}/src/rwlock_posix.cc")
+
+if (CMAKE_SYSTEM_NAME STREQUAL "QNX")
+  list(REMOVE_ITEM EXCLUDE_PATHS
+    pulse_thread_delegate.cc)
+endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "QNX")
     # --- QDB Wrapper
@@ -102,17 +103,6 @@ endif()
 
 if(UNIX AND NOT QNXNTO)
   list(APPEND LIBRARIES pthread dl rt)
-elseif(QNXNTO)
-  set(SOURCES ${SOURCES}
-  "${CMAKE_CURRENT_LIST_DIR}/src/threads/async_runner.cc"
-  "${CMAKE_CURRENT_LIST_DIR}/src/threads/pulse_thread_delegate.cc"
-  "${CMAKE_CURRENT_LIST_DIR}/src/threads/thread_validator.cc"
-  "${CMAKE_CURRENT_LIST_DIR}/src/threads/thread_delegate.cc"
-  "${CMAKE_CURRENT_LIST_DIR}/src/threads/thread_posix.cc"
-  "${CMAKE_CURRENT_LIST_DIR}/src/signals_posix.cc"
-  "${CMAKE_CURRENT_LIST_DIR}/src/rwlock_posix.cc"
-  "${CMAKE_CURRENT_LIST_DIR}/src/date_time.cc"
-  )
 endif()
 
 add_library("Utils" ${SOURCES})

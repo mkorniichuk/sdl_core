@@ -30,4 +30,10 @@
 
 set(TARGET_PLATFORM AGL)
 
-include(/opt/agl-sdk/6.0.2-corei7-64/sysroots/x86_64-aglsdk-linux/usr/share/cmake/OEToolchainConfig.cmake)
+set(OE_CMAKE_TOOLCHAIN_FILE "$ENV{OE_CMAKE_TOOLCHAIN_FILE}")
+if("${OE_CMAKE_TOOLCHAIN_FILE}" STREQUAL "")
+    message(FATAL_ERROR "OE_CMAKE_TOOLCHAIN_FILE environment variable is not defined")
+endif()
+set(OE_CMAKE_TOOLCHAIN_FILE "${OE_CMAKE_TOOLCHAIN_FILE}" CACHE INTERNAL "")
+
+include(${OE_CMAKE_TOOLCHAIN_FILE})

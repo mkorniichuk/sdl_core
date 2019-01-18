@@ -30,9 +30,6 @@
 
 cmake_minimum_required(VERSION 2.8.11)
 
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
 set (PROJECT smartDeviceLinkCore)
 project (${PROJECT})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/tools/cmake/modules/")
@@ -232,11 +229,11 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 set(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_BINARY_DIR})
 set(ARCHIVE_OUTPUT_DIRECTORY ./bin)
 
-# Set default cxx_flags (if not defined in toolchain files)
-if (NOT CMAKE_CXX_FLAGS)
-  set(CMAKE_CXX_FLAGS "-Wall -Werror -Wuninitialized -Wvla")
-endif()
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+# Set default cxx_flags (if not defined in toolchain files)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wuninitialized -Wvla")
 
 set(CMAKE_CXX_FLAGS_RELEASE " -DNDEBUG -s -O2")
 set(CMAKE_CXX_FLAGS_DEBUG   " -DDEBUG -g3 -ggdb3")
@@ -299,7 +296,6 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
   add_definitions(-DOS_LINUX)
 elseif(CMAKE_SYSTEM_NAME STREQUAL "QNX")
   add_definitions(-DOS_QNX)
-  SET(BUILD_BT_SUPPORT OFF)
   SET(BUILD_BACKTRACE_SUPPORT OFF)
   SET(EXTENDED_MEDIA_MODE OFF)
 endif()

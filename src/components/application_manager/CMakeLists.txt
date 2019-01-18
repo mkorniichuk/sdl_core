@@ -160,6 +160,7 @@ add_library("MessageHelper" ${MESSAGE_HELPER_SOURCES})
 target_link_libraries("MessageHelper" ${LIBRARIES})
 
 add_library("ApplicationManager" ${SOURCES})
+add_dependencies("ApplicationManager" libbson)
 
 list(APPEND LIBRARIES
   AMEventEngine
