@@ -49,7 +49,7 @@ set(EXCLUDE_PATHS
 collect_sources(SOURCES "${CMAKE_CURRENT_SOURCE_DIR}" "${EXCLUDE_PATHS}")
 
 set(PLATFORM_DEPENDENT_SOURCES)
-if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   collect_sources(PLATFORM_DEPENDENT_SOURCES platform_specific/linux)
 endif()
 list(APPEND SOURCES ${PLATFORM_DEPENDENT_SOURCES})
@@ -65,12 +65,16 @@ set(LIBRARIES
   jsoncpp
 )
 
-if (BUILD_USB_SUPPORT)
+if(${CMAKE_SYSTEM_NAME} MATCHES "QNX")
+  list(APPEND LIBRARIES socket)
+endif()
+
+if(BUILD_USB_SUPPORT)
   list(APPEND LIBRARIES libusb-1.0.so)
 endif()
 
-if (BUILD_BT_SUPPORT)
- if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if(BUILD_BT_SUPPORT)
+ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
   list(APPEND LIBRARIES bluetooth)
  endif()
 endif()

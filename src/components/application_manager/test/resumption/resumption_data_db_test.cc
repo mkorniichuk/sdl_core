@@ -36,8 +36,8 @@
 #include "application_manager/mock_application.h"
 #include "application_manager/mock_application_manager_settings.h"
 #include "interfaces/MOBILE_API.h"
-#include "utils/sqlite_wrapper/sql_database.h"
-#include "utils/sqlite_wrapper/sql_query.h"
+#include "sql/sql_database.h"
+#include "sql/sql_query.h"
 
 #include "utils/file_system.h"
 #include "application_manager/resumption_data_test.h"
@@ -91,7 +91,9 @@ class ResumptionDataDBTest : public ResumptionDataTest {
       CreateDirectory(file_system::CurrentWorkingDirectory() + "/" + path_);
       CreateDirectory(kPath);
       test_db_ = new utils::dbms::SQLDatabase(kDatabaseName);
+#ifndef __QNX__
       test_db_->set_path(kPath + "/");
+#endif //__QNX__
       res_db_ = new TestResumptionDataDB(In_File_Storage);
     } else {
       res_db_ = new TestResumptionDataDB(In_Memory_Storage);
@@ -99,7 +101,9 @@ class ResumptionDataDBTest : public ResumptionDataTest {
     }
 
     EXPECT_TRUE(test_db_->Open());
+#ifndef __QNX__
     EXPECT_TRUE(test_db_->IsReadWrite());
+#endif //__QNX__
   }
 
   static utils::dbms::SQLDatabase* test_db_;

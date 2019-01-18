@@ -37,8 +37,8 @@
 #include <utility>
 #include "gtest/gtest.h"
 
-#include "utils/sqlite_wrapper/sql_database.h"
-#include "utils/sqlite_wrapper/sql_query.h"
+#include "sql/sql_database.h"
+#include "sql/sql_query.h"
 #include "utils/file_system.h"
 #include "application_manager/resumption/resumption_sql_queries.h"
 #include "policy/sql_pt_queries.h"
@@ -113,9 +113,11 @@ class ResumptionSqlQueriesTest : public ::testing::Test {
   static const int timeStamp2;
 
   static void SetUpTestCase() {
-    db_ = new SQLDatabase();
+    db_ = new SQLDatabase(utils::dbms::StorageType::IN_MEMORY);
     ASSERT_TRUE(db_->Open());
+#ifndef __QNX__
     ASSERT_TRUE(db_->IsReadWrite());
+#endif // __QNX__
     SQLQuery query(db_);
     ASSERT_TRUE(query.Exec(kCreateSchema));
     SQLQuery query_logging_off(db_);

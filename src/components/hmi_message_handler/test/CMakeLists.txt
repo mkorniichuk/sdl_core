@@ -37,13 +37,13 @@ include_directories (
     ${COMPONENTS_DIR}/hmi_message_handler/test/include
 )
 
-if (HMIADAPTER STREQUAL "messagebroker")
+if(HMIADAPTER STREQUAL "messagebroker")
   set(EXCLUDE_PATHS)
 else()
   set(EXCLUDE_PATHS hmi_message_handler_impl_test.cc)
 endif()
 
-set(LIBRARIES    
+set(LIBRARIES
     gmock
     ApplicationManager
     HMIMessageHandler
@@ -52,9 +52,13 @@ set(LIBRARIES
     ConfigProfile
 )
 
+if(${CMAKE_SYSTEM_NAME} MATCHES "QNX")
+  list(APPEND LIBRARIES socket)
+endif()
+
 collect_sources(SOURCES "${CMAKE_CURRENT_SOURCE_DIR}" "${EXCLUDE_PATHS}")
 
-if (HMIADAPTER STREQUAL "messagebroker")
+if(HMIADAPTER STREQUAL "messagebroker")
   GET_PROPERTY(BOOST_LIBS_DIRECTORY GLOBAL PROPERTY GLOBAL_BOOST_LIBS)
   list(APPEND LIBRARIES boost_system -L${BOOST_LIBS_DIRECTORY})
 endif()

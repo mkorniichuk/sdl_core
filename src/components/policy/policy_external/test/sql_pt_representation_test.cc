@@ -1561,11 +1561,13 @@ TEST(SQLPTRepresentationTest3, RemoveDB_RemoveDB_ExpectFileDeleted) {
   SQLPTRepresentation reps(in_memory_);
   EXPECT_EQ(::policy::SUCCESS, reps.Init(&policy_settings_));
   EXPECT_EQ(::policy::EXISTS, reps.Init(&policy_settings_));
+#ifndef __QNX__
   std::string path = (reps.db())->get_path();
   // Act
   reps.RemoveDB();
   // Check
   EXPECT_FALSE(file_system::FileExists(path));
+#endif //__QNX__
 }
 
 TEST_F(SQLPTRepresentationTest,

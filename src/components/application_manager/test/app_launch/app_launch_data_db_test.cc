@@ -36,8 +36,8 @@
 #include <memory>
 #include "gtest/gtest.h"
 #include "utils/macro.h"
-#include "sql_database.h"
-#include "sql_query.h"
+#include "sql/sql_database.h"
+#include "sql/sql_query.h"
 
 #include "utils/file_system.h"
 #include "application_manager/mock_app_launch_settings.h"
@@ -99,7 +99,9 @@ class AppLaunchDataDBTest : public ::testing::Test {
     test_db_ = (res_db_->db());
 
     EXPECT_TRUE(test_db()->Open());
+#ifndef __QNX__
     EXPECT_TRUE(test_db()->IsReadWrite());
+#endif //__QNX__
   }
 
   // Memory keep and clear AppLaunchDataDb

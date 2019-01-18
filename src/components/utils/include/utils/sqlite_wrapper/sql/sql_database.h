@@ -43,13 +43,13 @@ namespace utils {
 namespace dbms {
 
 class SQLQuery;
-
+enum class StorageType {IN_MEMORY};
 /**
  * Represents a connection to a database.
  */
 class SQLDatabase {
  public:
-  SQLDatabase();
+  SQLDatabase(StorageType storage_type);
   explicit SQLDatabase(const std::string& filename);
   ~SQLDatabase();
 
@@ -144,17 +144,6 @@ class SQLDatabase {
    * The last error that occurred on the database
    */
   int error_;
-
-  /**
-   *  The temporary in-memory database
-   *  @see SQLite manual
-   */
-  static const std::string kInMemory;
-
-  /**
-   * The extension of filename of database
-   */
-  static const std::string kExtension;
 
   /**
    * Execs query for internal using in this class

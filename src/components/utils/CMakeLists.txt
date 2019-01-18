@@ -89,7 +89,7 @@ if(NOT BUILD_BT_SUPPORT)
   )
 endif()
 
-if (NOT CMAKE_SYSTEM_NAME STREQUAL "QNX")
+if(NOT CMAKE_SYSTEM_NAME STREQUAL "QNX")
     list(APPEND EXCLUDE_PATHS
       pulse_thread_delegate.cc
     )
@@ -102,20 +102,20 @@ set(PATHS
 
 collect_sources(SOURCES "${PATHS}" "${EXCLUDE_PATHS}")
 
-if (CMAKE_SYSTEM_NAME STREQUAL "QNX")
+if(CMAKE_SYSTEM_NAME STREQUAL "QNX")
     # --- QDB Wrapper
     add_subdirectory(./src/qdb_wrapper)
-else ()
+else()
     # --- SQLite Wrapper
     add_subdirectory(./src/sqlite_wrapper)
-endif ()
+endif()
 
 if(UNIX AND NOT QNXNTO)
   list(APPEND LIBRARIES pthread)
   list(APPEND LIBRARIES dl)
 endif()
 
-if(${OS} STREQUAL "qnx")
+if (${CMAKE_SYSTEM_NAME} MATCHES "QNX")
   set(SOURCES ${SOURCES}
   "${CMAKE_CURRENT_LIST_DIR}/src/threads/async_runner.cc"
   "${CMAKE_CURRENT_LIST_DIR}/src/threads/pulse_thread_delegate.cc"
