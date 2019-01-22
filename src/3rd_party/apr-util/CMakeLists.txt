@@ -43,6 +43,10 @@ else()
     message(WARNING "Apr Util found but has to be reinstalled.")
   else()
     message(STATUS "Did not found Apr Util. Installing Apr Util")
+
+    # Since apr-utils are required to build, apr should be rebuild as well.
+    set(NO_REBUILD_3RD_PARTY_LOGGER OFF PARENT_SCOPE)
+    set(FORCE_3RD_PARTY_LOGGER ON PARENT_SCOPE)
   endif()
   set(APR_UTIL_SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/apr-util-1.5.3)
   set(APR_UTIL_BUILD_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/apr-util-build)

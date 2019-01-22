@@ -55,11 +55,11 @@ if(ENABLE_LOG)
   # --- log4cxx
   add_subdirectory(apache-log4cxx)
 
-  # --- libapr-1
-  add_subdirectory(apr)
-
   # --- apr-util
   add_subdirectory(apr-util)
+
+  # --- apr
+  add_subdirectory(apr)
 endif()
 
 add_subdirectory(bson)

@@ -45,13 +45,17 @@ if (APR_UTIL_FIND_VERSION)
   set(_apu_find_ver_major ${CMAKE_MATCH_1})
   set(_apu_find_ver_minor ${CMAKE_MATCH_2})
   set(_apu_find_ver_patch ${CMAKE_MATCH_3})
-  set(_apr_util_lib_suffix "-${_apu_find_ver_major}.so.0.${_apu_find_ver_minor}.${_apu_find_ver_patch}")
+  if (TARGET_PLATFORM STREQUAL "QNX7")
+    set(_apr_util_lib_suffix "-${_apu_find_ver_major}.so.${_apu_find_ver_minor}")
+  else()
+    set(_apr_util_lib_suffix "-${_apu_find_ver_major}.so.0.${_apu_find_ver_minor}.${_apu_find_ver_patch}")
+  endif()
 else()
   set(_apr_util_lib_suffix "-1")
 endif()
 
 ###########################
-# Looking for Apr libs
+# Looking for Apr Util libs
 ###########################
 
 find_library(APR_UTIL_LIBRARY

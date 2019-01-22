@@ -41,6 +41,7 @@ if ((LOG4CXX_FOUND OR NO_REBUILD_3RD_PARTY_LOGGER) AND
 else()
   message(STATUS "Did not found Log4CXX. Installing Log4CXX")
 
+  # Since logger is not found, apr and apr-util has to be rebuild as parts of logger
   set(NO_REBUILD_3RD_PARTY_LOGGER OFF PARENT_SCOPE)
   set(FORCE_3RD_PARTY_LOGGER ON PARENT_SCOPE)
 

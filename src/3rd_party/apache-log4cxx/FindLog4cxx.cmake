@@ -40,7 +40,7 @@ endif()
 set (Log4cxx_FOUND 1)
 
 ###########################
-# Looking for Apr headers
+# Looking for log4cxx headers
 ###########################
 
 find_path(LOG4CXX_INCLUDE
@@ -65,7 +65,7 @@ endif()
 ###########################
 
 ###########################
-# Looking for Apr libs
+# Looking for log4cxx libs
 ###########################
 
 find_library(LOG4CXX_LIBRARY
