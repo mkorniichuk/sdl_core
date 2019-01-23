@@ -51,7 +51,7 @@ class MetricWrapper {
   virtual std::string GetStyledString();
   virtual Json::Value GetJsonMetric();
   virtual ~MetricWrapper();
-
+  virtual utils::ResourseUsage const* GetResources();
  protected:
   void Clear();
 };
