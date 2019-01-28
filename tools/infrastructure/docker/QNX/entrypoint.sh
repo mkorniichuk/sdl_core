@@ -14,10 +14,11 @@ if [[ $EX_CODE -ne $? ]]; then
     export HOME=/home/developer
 fi
 
-echo "Welcome to developer_qnx:build!"
-printf "Starting with user developer, UID : $USER_ID \n\n"
-echo   "    You may run sudo without password"
-printf "    You may run GUI applications in container\n\n"
+printf "Welcome to developer_qnx:build!
+Starting with user developer, UID: $USER_ID
+
+    You may run sudo without password
+    You may run GUI applications in container\n\n"
 
 [ -e /opt/startup/ ] && for script in /opt/startup/*; do bash $script ; done
 

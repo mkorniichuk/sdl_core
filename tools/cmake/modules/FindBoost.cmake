@@ -1,4 +1,4 @@
-# Copyright (c) 2018, Ford Motor Company
+# Copyright (c) 2019, Ford Motor Company
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -261,8 +261,6 @@ if (BOOST_SYSTEM_LIBRARY AND
     message(WARNING "Detected version of Boost is too old (${Boost_VERSION}). Requested version was ${BOOST_FIND_VERSION}")
     set(Boost_FOUND 0)
   endif()
-
-  ###########################
 else()
   message(STATUS "Failed to find Boost components.")
   set(Boost_FOUND 0)

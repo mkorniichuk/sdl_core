@@ -36,7 +36,6 @@ find_package(APR)
 
 if ((APR_FOUND OR NO_REBUILD_3RD_PARTY_LOGGER) AND
     NOT FORCE_3RD_PARTY_LOGGER)
-
   add_custom_target(libapr-1)
 else()
   if (APR_FOUND AND FORCE_3RD_PARTY_LOGGER)

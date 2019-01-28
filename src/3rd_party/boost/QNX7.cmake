@@ -1,4 +1,4 @@
-# Copyright (c) 2018, Ford Motor Company
+# Copyright (c) 2019, Ford Motor Company
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,9 @@
 include(ExternalProject)
 
 set(BOOST_QNX_PROJECT_CONFIG_JAM
-  "using gcc : nto${CMAKE_SYSTEM_PROCESSOR} : ${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-g++${HOST_EXECUTABLE_SUFFIX} : -L${QNX_HOST}/usr/lib -I${QNX_HOST}/usr/include")
+  "using gcc : nto${CMAKE_SYSTEM_PROCESSOR} : \
+  ${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-g++${HOST_EXECUTABLE_SUFFIX} : \
+  -L${QNX_HOST}/usr/lib -I${QNX_HOST}/usr/include")
 
 set(BOOST_GCC_JAM
   sed -Ei "s/case darwin/case *qnx*/g" ./tools/build/src/tools/gcc.jam)
@@ -49,7 +51,11 @@ else()
 endif ()
 
 set(BOOST_BUILD_COMMAND
-  ./b2 address-model=${ADDRESS_MODEL} cxxflags="-stdlib=libstdc++" linkflags="-stdlib=libstdc++" target-os=qnxnto toolset=gcc-nto${CMAKE_SYSTEM_PROCESSOR} define=__QNXNTO__)
+  ./b2 address-model=${ADDRESS_MODEL}
+    cxxflags="-stdlib=libstdc++"
+    linkflags="-stdlib=libstdc++"
+    target-os=qnxnto
+    toolset=gcc-nto${CMAKE_SYSTEM_PROCESSOR} define=__QNXNTO__)
 
 ExternalProject_Add(
   Boost

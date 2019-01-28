@@ -36,8 +36,7 @@ find_package(Log4cxx)
 
 if ((LOG4CXX_FOUND OR NO_REBUILD_3RD_PARTY_LOGGER) AND
     NOT FORCE_3RD_PARTY_LOGGER)
-
-    add_custom_target(liblog4cxx)
+  add_custom_target(liblog4cxx)
 else()
   message(STATUS "Did not find Log4CXX. Installing Log4CXX")
 

@@ -36,8 +36,7 @@ find_package(APRUtil)
 
 if ((APU_FOUND OR NO_REBUILD_3RD_PARTY_LOGGER) AND
     NOT FORCE_3RD_PARTY_LOGGER)
-
-    add_custom_target(apr-util)
+  add_custom_target(apr-util)
 else()
   if (APU_FOUND AND FORCE_3RD_PARTY_LOGGER)
     message(WARNING "Apr Util is found but has to be reinstalled.")

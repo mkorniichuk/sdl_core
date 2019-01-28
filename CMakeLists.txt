@@ -290,7 +290,6 @@ if(ENABLE_GCOV)
   message(STATUS "GCOV enabled")
 endif()
 
-# TODO(AK): check current OS here
 add_definitions(-DOS_POSIX)
 if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
   add_definitions(-DOS_LINUX)

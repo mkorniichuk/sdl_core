@@ -1,4 +1,4 @@
-# Copyright (c) 2018, Ford Motor Company
+# Copyright (c) 2019, Ford Motor Company
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,24 +28,24 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-if (LOG4CXX_FOUND)
-  message(STATUS "Found Log4cxx: ${LOG4CXX_INCLUDE_DIR}")
+if (APR_FOUND)
+  message(STATUS "Found Apr: ${APR_INCLUDE_DIR}")
   return()
 endif()
 
-if (NOT DEFINED LOG4CXX_USE_SYSTEM_PATH)
-  set(LOG4CXX_USE_SYSTEM_PATH 1)
+if (NOT DEFINED APR_USE_SYSTEM_PATH)
+  set(APR_USE_SYSTEM_PATH 1)
 endif()
 
-set (Log4cxx_FOUND 1)
+set (Apr_FOUND 1)
 
 ###########################
-# Looking for log4cxx headers
+# Looking for Apr headers
 ###########################
 
-find_path(LOG4CXX_INCLUDE
+find_path(APR_INCLUDE
   NAMES
-    log4cxx/log4cxx.h
+    apr_version.h
   PATHS
     ${3RD_PARTY_INSTALL_PREFIX}
   PATH_SUFFIXES
@@ -53,10 +53,10 @@ find_path(LOG4CXX_INCLUDE
   NO_DEFAULT_PATH
   NO_CMAKE_FIND_ROOT_PATH
 )
-if (LOG4CXX_USE_SYSTEM_PATH)
-  find_path(LOG4CXX_INCLUDE
+if (APR_USE_SYSTEM_PATH)
+  find_path(APR_INCLUDE
     NAMES
-      log4cxx.h
+      apr_version.h
     PATH_SUFFIXES
       include
   )
@@ -65,12 +65,12 @@ endif()
 ###########################
 
 ###########################
-# Looking for log4cxx libs
+# Looking for Apr libs
 ###########################
 
-find_library(LOG4CXX_LIBRARY
+find_library(APR_LIBRARY
   NAMES
-    log4cxx
+    apr-1
   PATHS
     ${3RD_PARTY_INSTALL_PREFIX_ARCH}
   PATH_SUFFIXES
@@ -78,10 +78,10 @@ find_library(LOG4CXX_LIBRARY
   NO_DEFAULT_PATH
   NO_CMAKE_FIND_ROOT_PATH
 )
-if (LOG4CXX_USE_SYSTEM_PATH)
-  find_library(LOG4CXX_LIBRARY
+if (APR_USE_SYSTEM_PATH)
+  find_library(APR_LIBRARY
     NAMES
-      log4cxx
+      apr-1
     PATH_SUFFIXES
       lib
   )
@@ -93,31 +93,41 @@ endif()
 # Check components
 ###########################
 
-if (LOG4CXX_INCLUDE AND LOG4CXX_LIBRARY)
-  get_filename_component(LOG4CXX_LIBRARY_DIR ${LOG4CXX_LIBRARY} DIRECTORY)
+if (APR_INCLUDE AND APR_LIBRARY)
+  get_filename_component(APR_LIBRARY_DIR ${APR_LIBRARY} DIRECTORY)
 
-  execute_process(
-    COMMAND /bin/bash -c "bash ${CMAKE_CURRENT_SOURCE_DIR}/helpers.sh \
-            IsActualVersion \
-            ${LOG4CXX_SOURCE_DIRECTORY} \
-            ${LOG4CXX_LIBRARY_DIR}"
-    RESULT_VARIABLE IS_LOGGER_ACTUAL
-  )
-  if (NOT ${IS_LOGGER_ACTUAL})
-    message(WARNING "Detected version of Log4CXX is too old.")
-    set(Log4cxx_FOUND 0)
+  foreach(v MAJOR MINOR PATCH)
+    file(STRINGS "${APR_INCLUDE}/apr_version.h" _apr_VERSION_H_CONTANT_${v} REGEX "#define APR_${v}_VERSION ")
+    string(REGEX REPLACE "[A-z# ]" "" _apr_${v}_VERSION ${_apr_VERSION_H_CONTANT_${v}})
+  endforeach()
+
+  set(Apr_VERSION "${_apr_MAJOR_VERSION}.${_apr_MINOR_VERSION}.${_apr_PATCH_VERSION}")
+  unset(_apr_MAJOR_VERSION)
+  unset(_apr_MINOR_VERSION)
+  unset(_apr_PATCH_VERSION)
+
+  if (Apr_VERSION STREQUAL "")
+    message(WARNING "Apr version could not be defined properly from ${APR_INCLUDE}/apr_version.h")
+    set(Apr_FOUND 0)
   endif()
+
+  if (Apr_VERSION VERSION_LESS APR_FIND_VERSION)
+    message(WARNING "Detected version of Apr is too old (${Apr_VERSION}). Requested version was ${APR_FIND_VERSION}")
+    set(Apr_FOUND 0)
+  endif()
+
 else()
-  message(STATUS "Failed to find Log4cxx components.")
-  set(Log4cxx_FOUND 0)
+  message(STATUS "Failed to find Apr components.")
+  set(Apr_FOUND 0)
 endif()
 
-if (Log4cxx_FOUND)
-  set(LOG4CXX_FOUND ${Log4cxx_FOUND} CACHE INTERNAL "Log4cxx found" FORCE)
-  set(LOG4CXX_INCLUDE_DIRECTORY ${LOG4CXX_INCLUDE} CACHE INTERNAL "Installation path of Log4CXX headers" FORCE)
-  set(LOG4CXX_LIBS_DIRECTORY ${LOG4CXX_LIBRARY_DIR} CACHE INTERNAL "Installation path of Log4CXX libraries" FORCE)
+if (Apr_FOUND)
+  set(APR_FOUND ${Apr_FOUND} CACHE INTERNAL "Apr found" FORCE)
+  set(APR_INCLUDE_DIR ${APR_INCLUDE} CACHE INTERNAL "Apr include path" FORCE)
+  set(APR_LIBRARY_DIR ${APR_LIBRARY_DIR} CACHE INTERNAL "Apr library path" FORCE)
+  set(APR_VERSION ${Apr_VERSION} CACHE INTERNAL "Apr version" FORCE)
 
-  message(STATUS "Found Log4cxx: ${LOG4CXX_INCLUDE_DIRECTORY}")
+  message(STATUS "Found Apr: ${APR_INCLUDE_DIR} (found version \"${APR_VERSION}\")")
 endif()
 
-mark_as_advanced(LOG4CXX_INCLUDE LOG4CXX_LIBRARY Log4cxx_FOUND)
+mark_as_advanced(APR_INCLUDE APR_LIBRARY Apr_VERSION Apr_FOUND)

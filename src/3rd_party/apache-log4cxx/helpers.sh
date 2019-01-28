@@ -58,9 +58,8 @@ IsActualVersion() {
     CURRENT_VERSION=$(cd $LOG4CXX_SOURCE_DIRECTORY && git log --pretty=format:%H -1 .)
     if [[ $INSTALLED_VERSION == $CURRENT_VERSION ]]; then
         return 1
-    else
-        return 0
     fi
+    return 0
 }
 
 "$@"

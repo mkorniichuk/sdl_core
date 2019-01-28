@@ -1,4 +1,4 @@
-# Copyright (c) 2018, Ford Motor Company
+# Copyright (c) 2019, Ford Motor Company
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -31,10 +31,17 @@
 include(ExternalProject)
 
 set(BOOST_AGL_PROJECT_CONFIG_JAM
-  "using gcc : agl : x86_64-agl-linux-gcc  -march=corei7 -mtune=corei7 -mfpmath=sse -msse4.2 --sysroot=/opt/agl-sdk/6.0.2-corei7-64/sysroots/corei7-64-agl-linux : ")
+  "using gcc : agl : x86_64-agl-linux-gcc \
+  -march=corei7 -mtune=corei7 -mfpmath=sse -msse4.2 \
+  --sysroot=/opt/agl-sdk/6.0.2-corei7-64/sysroots/corei7-64-agl-linux : ")
 
 set(CONFIGURE_COMMAND
-  CC=\"\" ./bootstrap.sh --with-libraries=system,thread,date_time,filesystem --prefix=${3RD_PARTY_INSTALL_PREFIX} COMMAND echo ${BOOST_AGL_PROJECT_CONFIG_JAM} $<SEMICOLON> >> ./project-config.jam)
+  CC=\"\" ./bootstrap.sh
+    --with-libraries=system,thread,date_time,filesystem
+    --prefix=${3RD_PARTY_INSTALL_PREFIX}
+    COMMAND echo ${BOOST_AGL_PROJECT_CONFIG_JAM} $<SEMICOLON> >> ./project-config.jam)
+
+message(STATUS ${CONFIGURE_COMMAND})
 
 set(BOOST_CXX_FLAGS $ENV{CXXFLAGS})
 set(BUILD_COMMAND

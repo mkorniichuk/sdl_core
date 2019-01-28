@@ -1,4 +1,4 @@
-# Copyright (c) 2018, Ford Motor Company
+# Copyright (c) 2019, Ford Motor Company
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,40 +28,49 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-if (APR_UTIL_FOUND)
-  message(STATUS "Found Apr-Util: ${APR_UTIL_INCLUDE_DIRECTORY}")
+if (LOG4CXX_FOUND)
+  message(STATUS "Found Log4cxx: ${LOG4CXX_INCLUDE_DIR}")
   return()
 endif()
 
-if (NOT DEFINED APR_UTIL_USE_SYSTEM_PATH)
-  set(APR_UTIL_USE_SYSTEM_PATH 1)
+if (NOT DEFINED LOG4CXX_USE_SYSTEM_PATH)
+  set(LOG4CXX_USE_SYSTEM_PATH 1)
 endif()
 
-set (Apr_Util_FOUND 1)
+set (Log4cxx_FOUND 1)
 
 ###########################
-if (APR_UTIL_FIND_VERSION)
-  string(REGEX MATCHALL "([0-9]+)\\.([0-9]+)\\.([0-9]+)" _ ${APR_UTIL_FIND_VERSION})
-  set(_apu_find_ver_major ${CMAKE_MATCH_1})
-  set(_apu_find_ver_minor ${CMAKE_MATCH_2})
-  set(_apu_find_ver_patch ${CMAKE_MATCH_3})
-  if (TARGET_PLATFORM STREQUAL "QNX7")
-    set(_apr_util_lib_suffix "-${_apu_find_ver_major}.so.${_apu_find_ver_minor}")
-  else()
-    set(_apr_util_lib_suffix "-${_apu_find_ver_major}.so.0.${_apu_find_ver_minor}.${_apu_find_ver_patch}")
-  endif()
-else()
-  set(_apr_util_lib_suffix "-1")
-endif()
-
-###########################
-# Looking for Apr Util libs
+# Looking for log4cxx headers
 ###########################
 
-find_library(APR_UTIL_LIBRARY
+find_path(LOG4CXX_INCLUDE
   NAMES
-    aprutil${_apr_util_lib_suffix}
-    libaprutil${_apr_util_lib_suffix}
+    log4cxx/log4cxx.h
+  PATHS
+    ${3RD_PARTY_INSTALL_PREFIX}
+  PATH_SUFFIXES
+    include
+  NO_DEFAULT_PATH
+  NO_CMAKE_FIND_ROOT_PATH
+)
+if (LOG4CXX_USE_SYSTEM_PATH)
+  find_path(LOG4CXX_INCLUDE
+    NAMES
+      log4cxx.h
+    PATH_SUFFIXES
+      include
+  )
+endif()
+
+###########################
+
+###########################
+# Looking for log4cxx libs
+###########################
+
+find_library(LOG4CXX_LIBRARY
+  NAMES
+    log4cxx
   PATHS
     ${3RD_PARTY_INSTALL_PREFIX_ARCH}
   PATH_SUFFIXES
@@ -69,11 +78,10 @@ find_library(APR_UTIL_LIBRARY
   NO_DEFAULT_PATH
   NO_CMAKE_FIND_ROOT_PATH
 )
-if (APR_UTIL_USE_SYSTEM_PATH)
-  find_library(APR_UTIL_LIBRARY
+if (LOG4CXX_USE_SYSTEM_PATH)
+  find_library(LOG4CXX_LIBRARY
     NAMES
-      aprutil${_apr_util_lib_suffix}
-      libaprutil${_apr_util_lib_suffix}
+      log4cxx
     PATH_SUFFIXES
       lib
   )
@@ -85,20 +93,31 @@ endif()
 # Check components
 ###########################
 
-if (APR_UTIL_LIBRARY)
-  get_filename_component(APR_UTIL_LIBRARY_DIR ${APR_UTIL_LIBRARY} DIRECTORY)
+if (LOG4CXX_INCLUDE AND LOG4CXX_LIBRARY)
+  get_filename_component(LOG4CXX_LIBRARY_DIR ${LOG4CXX_LIBRARY} DIRECTORY)
 
+  execute_process(
+    COMMAND /bin/bash -c "bash ${CMAKE_CURRENT_SOURCE_DIR}/helpers.sh \
+            IsActualVersion \
+            ${LOG4CXX_SOURCE_DIRECTORY} \
+            ${LOG4CXX_LIBRARY_DIR}"
+    RESULT_VARIABLE IS_LOGGER_ACTUAL
+  )
+  if (NOT ${IS_LOGGER_ACTUAL})
+    message(WARNING "Detected version of Log4CXX is too old.")
+    set(Log4cxx_FOUND 0)
+  endif()
 else()
-  message(STATUS "Failed to find Apr util components.")
-  set(Apr_Util_FOUND 0)
+  message(STATUS "Failed to find Log4cxx components.")
+  set(Log4cxx_FOUND 0)
 endif()
 
-if (Apr_Util_FOUND)
-  set(APU_FOUND ${Apr_Util_FOUND} CACHE INTERNAL "Apr util found" FORCE)
-  set(APU_LIBRARY_DIR ${APR_UTIL_LIBRARY_DIR} CACHE INTERNAL "Apr util library path" FORCE)
-  set(APU_VERSION ${Apr_util_VERSION} CACHE INTERNAL "Apr util version" FORCE)
+if (Log4cxx_FOUND)
+  set(LOG4CXX_FOUND ${Log4cxx_FOUND} CACHE INTERNAL "Log4cxx found" FORCE)
+  set(LOG4CXX_INCLUDE_DIRECTORY ${LOG4CXX_INCLUDE} CACHE INTERNAL "Installation path of Log4CXX headers" FORCE)
+  set(LOG4CXX_LIBS_DIRECTORY ${LOG4CXX_LIBRARY_DIR} CACHE INTERNAL "Installation path of Log4CXX libraries" FORCE)
 
-  message(STATUS "Found Apr Util: ${APU_LIBRARY_DIR}")
+  message(STATUS "Found Log4cxx: ${LOG4CXX_INCLUDE_DIRECTORY}")
 endif()
 
-mark_as_advanced(APU_INCLUDE_DIR APR_UTIL_LIBRARY APU_LIBRARY_DIR APU_VERSION APU_FOUND)
+mark_as_advanced(LOG4CXX_INCLUDE LOG4CXX_LIBRARY Log4cxx_FOUND)
