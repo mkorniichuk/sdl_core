@@ -40,9 +40,9 @@ if ((APR_FOUND OR NO_REBUILD_3RD_PARTY_LOGGER) AND
   add_custom_target(libapr-1)
 else()
   if (APR_FOUND AND FORCE_3RD_PARTY_LOGGER)
-    message(WARNING "Apr found but has to be reinstalled.")
+    message(WARNING "Apr is found but has to be reinstalled.")
   else()
-    message(STATUS "Did not found Apr. Installing Apr")
+    message(STATUS "Did not find Apr. Installing Apr")
   endif()
 
   set(APR_SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/apr-1.5.0)

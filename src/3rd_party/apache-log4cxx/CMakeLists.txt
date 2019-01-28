@@ -39,7 +39,7 @@ if ((LOG4CXX_FOUND OR NO_REBUILD_3RD_PARTY_LOGGER) AND
 
     add_custom_target(liblog4cxx)
 else()
-  message(STATUS "Did not found Log4CXX. Installing Log4CXX")
+  message(STATUS "Did not find Log4CXX. Installing Log4CXX")
 
   # Since logger is not found, apr and apr-util has to be rebuild as parts of logger
   set(NO_REBUILD_3RD_PARTY_LOGGER OFF PARENT_SCOPE)

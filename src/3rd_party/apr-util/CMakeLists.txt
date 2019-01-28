@@ -40,9 +40,9 @@ if ((APU_FOUND OR NO_REBUILD_3RD_PARTY_LOGGER) AND
     add_custom_target(apr-util)
 else()
   if (APU_FOUND AND FORCE_3RD_PARTY_LOGGER)
-    message(WARNING "Apr Util found but has to be reinstalled.")
+    message(WARNING "Apr Util is found but has to be reinstalled.")
   else()
-    message(STATUS "Did not found Apr Util. Installing Apr Util")
+    message(STATUS "Did not find Apr Util. Installing Apr Util")
 
     # Since apr-utils are required to build, apr should be rebuild as well.
     set(NO_REBUILD_3RD_PARTY_LOGGER OFF PARENT_SCOPE)

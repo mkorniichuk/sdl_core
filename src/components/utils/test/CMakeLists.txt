@@ -79,7 +79,6 @@ if (CMAKE_SYSTEM_NAME STREQUAL "QNX")
 
   file(COPY qdb_wrapper/start_test_qdb_server.sh DESTINATION   ${CMAKE_INSTALL_PREFIX}/tests)
 else ()
-  find_package(Sqlite3 REQUIRED)
   # exclude tests for QDB wrapper
   list (APPEND EXCLUDE_PATHS
     ${CMAKE_CURRENT_SOURCE_DIR}/qdb_wrapper
