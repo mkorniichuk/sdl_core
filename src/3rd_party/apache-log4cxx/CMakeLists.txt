@@ -55,8 +55,10 @@ else()
   set(LOG4CXX_SOURCE_INCLUDE_DIRECTORY ${LOG4CXX_SOURCE_DIRECTORY}/src/main/include)
   set(LOG4CXX_BUILD_INCLUDE_DIRECTORY ${LOG4CXX_BUILD_DIRECTORY}/src/main/include)
 
-  set(LOG4CXX_INCLUDE_DIRECTORY ${LOG4CXX_SOURCE_INCLUDE_DIRECTORY} ${LOG4CXX_BUILD_INCLUDE_DIRECTORY} CACHE INTERNAL "Installation path of Log4CXX headers" FORCE)
-  set(LOG4CXX_LIBS_DIRECTORY ${LOG4CXX_BUILD_DIRECTORY}/src/main/cpp/.libs  CACHE INTERNAL "Installation path of Log4CXX libraries" FORCE)
+  set(LOG4CXX_INCLUDE_DIRECTORY 
+    ${LOG4CXX_SOURCE_INCLUDE_DIRECTORY} ${LOG4CXX_BUILD_INCLUDE_DIRECTORY} CACHE INTERNAL "Installation path of Log4CXX headers" FORCE)
+  set(LOG4CXX_LIBS_DIRECTORY 
+    ${LOG4CXX_BUILD_DIRECTORY}/src/main/cpp/.libs  CACHE INTERNAL "Installation path of Log4CXX libraries" FORCE)
 
   include(${TARGET_PLATFORM})
 
@@ -65,11 +67,14 @@ else()
     WORKING_DIRECTORY ${LOG4CXX_BUILD_DIRECTORY}
   )
 
+  set(APPEND_COMMIT_HASH_CMD
+    "bash ${CMAKE_CURRENT_SOURCE_DIR}/helpers.sh "
+    "AppendCommitHash "
+    "${LOG4CXX_SOURCE_DIRECTORY} "
+    "${LOG4CXX_LIBS_DIRECTORY}"
+  )
   add_custom_command(TARGET liblog4cxx POST_BUILD
-    COMMAND /bin/bash -c "bash ${CMAKE_CURRENT_SOURCE_DIR}/helpers.sh \
-      AppendCommitHash \
-      ${LOG4CXX_SOURCE_DIRECTORY} \
-      ${LOG4CXX_LIBS_DIRECTORY}"
+    COMMAND /bin/bash -c ${APPEND_COMMIT_HASH_CMD}
   )
 
   install(

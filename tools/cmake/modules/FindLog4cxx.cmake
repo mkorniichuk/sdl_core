@@ -95,12 +95,11 @@ endif()
 
 if (LOG4CXX_INCLUDE AND LOG4CXX_LIBRARY)
   get_filename_component(LOG4CXX_LIBRARY_DIR ${LOG4CXX_LIBRARY} DIRECTORY)
-
+  set(CHECK_VERSION_CMD
+    "bash ${CMAKE_CURRENT_SOURCE_DIR}/helpers.sh "
+    "IsActualVersion ${LOG4CXX_SOURCE_DIRECTORY} ${LOG4CXX_LIBRARY_DIR}")
   execute_process(
-    COMMAND /bin/bash -c "bash ${CMAKE_CURRENT_SOURCE_DIR}/helpers.sh \
-            IsActualVersion \
-            ${LOG4CXX_SOURCE_DIRECTORY} \
-            ${LOG4CXX_LIBRARY_DIR}"
+    COMMAND /bin/bash -c ${CHECK_VERSION_CMD}
     RESULT_VARIABLE IS_LOGGER_ACTUAL
   )
   if (NOT ${IS_LOGGER_ACTUAL})

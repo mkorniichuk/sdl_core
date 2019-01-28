@@ -31,16 +31,19 @@
 include(ExternalProject)
 
 set(BOOST_QNX_PROJECT_CONFIG_JAM
-  "using gcc : nto${CMAKE_SYSTEM_PROCESSOR} : \
-  ${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-g++${HOST_EXECUTABLE_SUFFIX} : \
-  -L${QNX_HOST}/usr/lib -I${QNX_HOST}/usr/include")
+  "using gcc : nto${CMAKE_SYSTEM_PROCESSOR} :"
+  "${QNX_HOST}/usr/bin/nto${CMAKE_SYSTEM_PROCESSOR}-g++${HOST_EXECUTABLE_SUFFIX} :"
+  "-L${QNX_HOST}/usr/lib -I${QNX_HOST}/usr/include")
 
 set(BOOST_GCC_JAM
   sed -Ei "s/case darwin/case *qnx*/g" ./tools/build/src/tools/gcc.jam)
 set(BOOST_FILESYSTEM_OPERATION
   sed -Ei "s/__SUNPRO_CC/__QNX__/g" ./libs/filesystem/src/operations.cpp)
 set(BOOTSTRAP
-  ./bootstrap.sh --with-toolset=gcc --with-libraries=system,thread,date_time,filesystem --prefix=${3RD_PARTY_INSTALL_PREFIX})
+  ./bootstrap.sh
+    --with-toolset=gcc
+    --with-libraries=system,thread,date_time,filesystem
+    --prefix=${3RD_PARTY_INSTALL_PREFIX})
 
 if(${CMAKE_SYSTEM_PROCESSOR} MATCHES ".*aarch64")
   set(ADDRESS_MODEL "64")
