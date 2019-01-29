@@ -61,7 +61,6 @@ class DataAccessor {
   }
 
  private:
-  void* operator new(size_t size);
   const T& data_;
   // Require that the lock lives at least as long as the DataAccessor
   const std::shared_ptr<sync_primitives::BaseLock> lock_;

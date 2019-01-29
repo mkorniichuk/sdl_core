@@ -83,12 +83,6 @@ typedef NiceMock<
     ::test::components::application_manager_test::MockHMICapabilities>
     MockHMICapabilities;
 
-ACTION_TEMPLATE(SetArgPointer,
-                HAS_1_TEMPLATE_PARAMS(int, k),
-                AND_1_VALUE_PARAMS(vec)) {
-  *std::tr1::get<k>(args) = *vec;
-}
-
 MATCHER_P(CheckMessageResultCode, result_code, "") {
   return (*arg)[am::strings::msg_params][am::strings::result_code].asInt() ==
          result_code;
