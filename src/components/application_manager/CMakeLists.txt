@@ -60,17 +60,16 @@ include_directories (
   ${JSONCPP_INCLUDE_DIRECTORY}
   ${ENCRYPTION_INCLUDE_DIRECTORY}
   ${MESSAGE_BROKER_INCLUDE_DIRECTORY}
-  ${LOG4CXX_INCLUDE_DIRECTORY}
   ${BSON_INCLUDE_DIRECTORY}
 )
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
   include_directories(
     ${COMPONENTS_DIR}/utils/include/utils/sqlite_wrapper/
   )
 endif ()
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "QNX")
+if (CMAKE_SYSTEM_NAME STREQUAL "QNX")
   include_directories(
     ${COMPONENTS_DIR}/utils/include/utils/qdb_wrapper/
   )
@@ -144,10 +143,8 @@ set(LIBRARIES
   emhashmap -L${EMHASHMAP_LIBS_DIRECTORY}
 )
 
-
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-  list(APPEND LIBRARIES sqlite3)
-  list(APPEND LIBRARIES dl)
+if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  list(APPEND LIBRARIES sqlite3 dl)
 endif ()
 
 add_library("AMEventEngine" ${EVENT_ENGINE_SOURCES})
@@ -163,6 +160,7 @@ add_library("MessageHelper" ${MESSAGE_HELPER_SOURCES})
 target_link_libraries("MessageHelper" ${LIBRARIES})
 
 add_library("ApplicationManager" ${SOURCES})
+add_dependencies("ApplicationManager" libbson)
 
 list(APPEND LIBRARIES
   AMEventEngine

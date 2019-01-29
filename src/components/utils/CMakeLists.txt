@@ -31,18 +31,6 @@
 include(${CMAKE_SOURCE_DIR}/tools/cmake/helpers/platform.cmake)
 include(${CMAKE_SOURCE_DIR}/tools/cmake/helpers/sources.cmake)
 
-find_package(Sqlite3 REQUIRED)
-
-include_directories (
-  ${COMPONENTS_DIR}/utils/include
-  ${COMPONENTS_DIR}/config_profile/include
-  ${COMPONENTS_DIR}/media_manager/include
-  ${COMPONENTS_DIR}/protocol_handler/include
-  ${JSONCPP_INCLUDE_DIRECTORY}
-  ${LOG4CXX_INCLUDE_DIRECTORY}
-  ${CMAKE_SOURCE_DIR}/src
-)
-
 # dbms
 set(DBMS_PATHS
   ${CMAKE_CURRENT_SOURCE_DIR}/include/utils/sqlite_wrapper
@@ -67,10 +55,10 @@ endif()
 
 if(ENABLE_LOG)
   list(APPEND LIBRARIES
-	log4cxx -L${LOG4CXX_LIBS_DIRECTORY}
+    log4cxx -L${LOG4CXX_LIBS_DIRECTORY}
     apr-1 -L${APR_LIBS_DIRECTORY}
     aprutil-1 -L${APR_UTIL_LIBS_DIRECTORY}
-	ConfigProfile
+    ConfigProfile
   )
 else()
   list(APPEND EXCLUDE_PATHS
@@ -89,18 +77,21 @@ if(NOT BUILD_BT_SUPPORT)
   )
 endif()
 
-if(NOT CMAKE_SYSTEM_NAME STREQUAL "QNX")
-    list(APPEND EXCLUDE_PATHS
-      pulse_thread_delegate.cc
-    )
-endif()
-
 set(PATHS
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
 collect_sources(SOURCES "${PATHS}" "${EXCLUDE_PATHS}")
+list(APPEND SOURCES
+  "${CMAKE_CURRENT_LIST_DIR}/src/threads/thread_posix.cc"
+  "${CMAKE_CURRENT_LIST_DIR}/src/signals_posix.cc"
+  "${CMAKE_CURRENT_LIST_DIR}/src/rwlock_posix.cc")
+
+if (CMAKE_SYSTEM_NAME STREQUAL "QNX")
+  list(REMOVE_ITEM EXCLUDE_PATHS
+    pulse_thread_delegate.cc)
+endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "QNX")
     # --- QDB Wrapper
@@ -111,36 +102,30 @@ else()
 endif()
 
 if(UNIX AND NOT QNXNTO)
-  list(APPEND LIBRARIES pthread)
-  list(APPEND LIBRARIES dl)
-endif()
-
-if (${CMAKE_SYSTEM_NAME} MATCHES "QNX")
-  set(SOURCES ${SOURCES}
-  "${CMAKE_CURRENT_LIST_DIR}/src/threads/async_runner.cc"
-  "${CMAKE_CURRENT_LIST_DIR}/src/threads/pulse_thread_delegate.cc"
-  "${CMAKE_CURRENT_LIST_DIR}/src/threads/thread_validator.cc"
-  "${CMAKE_CURRENT_LIST_DIR}/src/threads/thread_delegate.cc"
-  "${CMAKE_CURRENT_LIST_DIR}/src/threads/thread_posix.cc"
-  "${CMAKE_CURRENT_LIST_DIR}/src/signals_posix.cc"
-  "${CMAKE_CURRENT_LIST_DIR}/src/rwlock_posix.cc"
-  "${CMAKE_CURRENT_LIST_DIR}/src/date_time.cc"
-  )
+  list(APPEND LIBRARIES pthread dl rt)
 endif()
 
 add_library("Utils" ${SOURCES})
-GET_PROPERTY(BOOST_LIBS_DIRECTORY GLOBAL PROPERTY GLOBAL_BOOST_LIBS)
+add_dependencies("Utils" liblog4cxx)
+add_dependencies("Utils" Boost)
+
 list(APPEND LIBRARIES boost_system -L${BOOST_LIBS_DIRECTORY})
 list(APPEND LIBRARIES boost_thread -L${BOOST_LIBS_DIRECTORY})
 list(APPEND LIBRARIES boost_date_time -L${BOOST_LIBS_DIRECTORY})
 list(APPEND LIBRARIES boost_filesystem -L${BOOST_LIBS_DIRECTORY})
+
 target_link_libraries("Utils" ${LIBRARIES})
-add_dependencies("Utils" Boost)
-
-
-if(ENABLE_LOG)
-  add_dependencies("Utils" install-3rd_party_logger Boost)
-endif()
+target_include_directories ("Utils" PUBLIC
+  ${COMPONENTS_DIR}/utils/include
+  ${COMPONENTS_DIR}/config_profile/include
+  ${COMPONENTS_DIR}/media_manager/include
+  ${COMPONENTS_DIR}/protocol_handler/include
+  ${JSONCPP_INCLUDE_DIRECTORY}
+  ${LOG4CXX_INCLUDE_DIRECTORY}
+  ${BOOST_INCLUDE_DIRECTORY}
+  ${APR_INCLUDE_DIRECTORY}
+  ${CMAKE_SOURCE_DIR}/src
+)
 
 if(BUILD_TESTS)
   add_subdirectory(test)

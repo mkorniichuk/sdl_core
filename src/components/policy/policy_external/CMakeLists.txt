@@ -42,7 +42,6 @@ include_directories (
   ${COMPONENTS_DIR}/utils/include/
   ${COMPONENTS_DIR}/config_profile/include
   ${POLICY_GLOBAL_INCLUDE_PATH}/
-  ${LOG4CXX_INCLUDE_DIRECTORY}
   ${JSONCPP_INCLUDE_DIRECTORY}
 )
 

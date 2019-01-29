@@ -35,7 +35,6 @@ include_directories (
   ${COMPONENTS_DIR}/protocol_handler/include/
   ${COMPONENTS_DIR}/utils/include/
   ${ENCRYPTION_INCLUDE_DIRECTORY}
-  ${LOG4CXX_INCLUDE_DIRECTORY}
 )
 
 set(PATHS

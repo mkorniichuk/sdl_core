@@ -40,7 +40,7 @@
 #include "policy/sql_pt_ext_representation.h"
 #include "utils/gen_hash.h"
 #include "utils/file_system.h"
-#include "sqlite_wrapper/sql_query.h"
+#include "utils/sqlite_wrapper/sql/sql_query.h"
 #include "rpc_base/rpc_base.h"
 #include "policy/policy_table/types.h"
 #include "policy/mock_policy_settings.h"

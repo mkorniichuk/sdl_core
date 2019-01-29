@@ -1,4 +1,4 @@
-# Copyright (c) 2014, Ford Motor Company
+# Copyright (c) 2019, Ford Motor Company
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,30 +28,8 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-set(APR_SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../apr-1.5.0)
-set(APR_BUILD_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../apr-build)
-
-set(APR_INCLUDE_DIRECTORY ${APR_SOURCE_DIRECTORY}/include)
-
-set(APR_LIBS_DIRECTORY ${APR_BUILD_DIRECTORY}/.libs)
-
-file(MAKE_DIRECTORY
-  ${APR_BUILD_DIRECTORY}/include/private
-  ${APR_SOURCE_DIRECTORY}/include/private
-)
-
-file(COPY ${APR_SOURCE_DIRECTORY}/tools/gen_test_char.c
-  DESTINATION ${APR_BUILD_DIRECTORY}/tools
-)
-
-if(DEFINED CMAKE_TOOLCHAIN_FILE)
-  include("./QNX_APR.cmake")
-else()
-  set(CONFIGURE_FLAGS "")
-endif()
-
 add_custom_command(OUTPUT ${APR_BUILD_DIRECTORY}/Makefile
-  COMMAND CC=${CMAKE_C_COMPILER} ${APR_SOURCE_DIRECTORY}/configure ${CONFIGURE_FLAGS}
+  COMMAND CC=${CMAKE_C_COMPILER} ${APR_SOURCE_DIRECTORY}/configure
   COMMAND ${CMAKE_COMMAND} -E copy include/apr.h ${APR_SOURCE_DIRECTORY}/include
   WORKING_DIRECTORY ${APR_BUILD_DIRECTORY}
 )
@@ -61,23 +39,4 @@ add_custom_command(OUTPUT ${APR_BUILD_DIRECTORY}/include/private/apr_escape_test
   COMMAND make include/private/apr_escape_test_char.h
   COMMAND ${CMAKE_COMMAND} -E copy include/private/apr_escape_test_char.h ${APR_SOURCE_DIRECTORY}/include/private
   WORKING_DIRECTORY ${APR_BUILD_DIRECTORY}
-)
-
-add_custom_target(libapr-1 ALL make
-  DEPENDS ${APR_BUILD_DIRECTORY}/include/private/apr_escape_test_char.h
-  WORKING_DIRECTORY ${APR_BUILD_DIRECTORY}
-)
-
-install(
-  DIRECTORY ${APR_LIBS_DIRECTORY}/
-  DESTINATION ${3RD_PARTY_INSTALL_PREFIX_ARCH}/lib
-  USE_SOURCE_PERMISSIONS
-  FILES_MATCHING PATTERN libapr-1.so*
-)
-
-install(
-  DIRECTORY ${APR_INCLUDE_DIRECTORY}/
-  DESTINATION ${3RD_PARTY_INSTALL_PREFIX}/include
-  USE_SOURCE_PERMISSIONS
-  FILES_MATCHING PATTERN *.h
 )

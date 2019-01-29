@@ -63,8 +63,8 @@ foreach(dir ${dirs})
   message(STATUS "libraries='${dir}'")
 endforeach()
 
-
 add_library(ProtocolHandler ${SOURCES})
+add_dependencies(ProtocolHandler libbson)
 target_link_libraries(ProtocolHandler ${LIBRARIES})
 
 if(BUILD_TESTS)

@@ -45,9 +45,7 @@ target_link_libraries(${target} qdb Utils)
 if (CMAKE_SYSTEM_NAME STREQUAL "QNX")
   file(COPY ${QDB_SRC_DIR}/policy.ini DESTINATION ${CMAKE_BINARY_DIR}/src/appMain)
   file(COPY ${QDB_SRC_DIR}/qdbserver.sh DESTINATION ${CMAKE_BINARY_DIR}/src/appMain)
-endif ()
 
-if (CMAKE_SYSTEM_NAME STREQUAL "QNX")
   install(FILES ${QDB_SRC_DIR}/policy.ini DESTINATION bin)
   install(FILES ${QDB_SRC_DIR}/qdbserver.sh DESTINATION bin
     PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ

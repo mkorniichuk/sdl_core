@@ -193,13 +193,11 @@ class EnumConversionHelper {
   static bool CStringToEnum(const char* str, EnumType* value) {
     typename CStringToEnumMap::const_iterator it =
         cstring_to_enum_map().find(str);
-    if (it == cstring_to_enum_map().end()) {
-      return false;
-    }
+    const bool is_found = it != cstring_to_enum_map().end();
     if (value) {
-      *value = it->second;
+      *value = is_found ? it->second : EnumType::INVALID_ENUM;
     }
-    return true;
+    return is_found;
   }
 
   static bool EnumToCString(EnumType value, const char** str) {

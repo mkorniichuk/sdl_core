@@ -30,17 +30,55 @@ We're ramping up our efforts to get SmartDeviceLink developed and maintained dir
 # Getting Started
 A quick guide to installing, configuring, and running an instance of the SDL Core on a linux OS.
 
+## Build SDL Core
+
+### Linux specific build
+
   1. Clone this repository
   2. Create a folder for your build outside of the source folder and run `cmake {path_to_sdl_core_source_folder}` from the build folder you created
   3. If there are any dependency issues, install missing dependencies
   4. Run the following commands to compile and install smartdevicelink
 
-
-
 ```
 %make
 %make install
 ```
+
+### AGL specific build
+
+  SDL Core supports building for Automotive Grade Linux (further AGL). The minimal supported version of AGL is [Flounder 6.0.2](https://wiki.automotivelinux.org/agl-distro/release-notes#flounder_602). Such build requires additional environment setup:
+
+  1. Setup [AGL Software Development Kit](http://docs.automotivelinux.org/master/docs/getting_started/en/dev/reference/setup-sdk-environment.html).
+
+  <b>Note:</b> SDK installation is not enough. Make sure, the `<path_to_sdk>/environment-setup-<your_target>` is sourced before build.
+  ```
+  % source <path_to_sdk>/environment-setup-<your_target>
+  ```
+
+  2. Setup SDL specific envionment variables:
+  ```
+  % export THIRD_PARTY_INSTALL_PREFIX=<path_to_3rd_party_libs_to_be_installed>
+  % export THIRD_PARTY_INSTALL_PREFIX_ARCH=<path_to_3rd_party_libs_to_be_installed>/
+  ```
+
+  3. Clone SDL Core repository
+  4. Run cmake with `CMAKE_TOOLCHAIN_FILE` option within build directory
+  ```
+  % cmake <path_to_src> -DCMAKE_TOOLCHAIN_FILE=<path_to_src>/toolchains/Toolchain-AGL-Linux-x86_64.cmake
+  ```
+  5. Build the project
+  ```
+  % make install
+  ```
+  <b>Note:</b> this command will build and install project. The installation includes installation of SDL Core to <buid_dir>/bin and all third party libraries to `THIRD_PARTY_INSTALL_PREFIX` and `THIRD_PARTY_INSTALL_PREFIX_ARCH`
+
+<b>Note:</b> SDL Core provides a [Dockerfile](tools/infrastructure/docker/AGL/Dockerfile) containing all the required tool for building for AGL target.
+
+### Project deployment to AGL machine
+
+  1. Copy <build_dir>/bin directory to a target machine
+  2. Copy all the built third party libs to a target machine
+  <b>Note:</b> SDL Core on target machine should be started as usual.
 
 ## Start SDL Core
 Once SDL Core is compiled and installed you can start it from the executable in the bin folder

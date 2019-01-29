@@ -41,7 +41,7 @@ include_directories(
 )
 
 set(LIBRARIES
-  gmock 
+  gmock
   HMI_API
   MOBILE_API
   SmartObjects
@@ -60,4 +60,3 @@ set (EXCLUDE_PATHS
 
 collect_sources(SOURCES "")
 create_test(formatters_test "${SOURCES}" "${LIBRARIES}")
-

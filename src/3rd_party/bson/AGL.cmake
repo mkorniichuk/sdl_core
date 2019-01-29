@@ -1,4 +1,4 @@
-# Copyright (c) 2014, Ford Motor Company
+# Copyright (c) 2019, Ford Motor Company
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,46 +28,36 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-set(APR_UTIL_SOURCE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../apr-util-1.5.3)
-set(APR_UTIL_BUILD_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../apr-util-build)
+include(ExternalProject)
 
-set(APR_UTIL_LIBS_DIRECTORY ${APR_UTIL_BUILD_DIRECTORY}/.libs)
+set(CONFIGURE_FLAGS
+  "--prefix=${3RD_PARTY_INSTALL_PREFIX}"
+  "--host=x86_64-aglsdk-linux")
 
-file(MAKE_DIRECTORY
-  ${APR_UTIL_BUILD_DIRECTORY}
+set(CONFIGURE_COMMAND
+  touch aclocal.m4 configure.ac Makefile.am Makefile.in configure config.h.in && ./configure ${CONFIGURE_FLAGS})
+
+ExternalProject_Add(
+  libbson
+  GIT_REPOSITORY "http://github.com/smartdevicelink/bson_c_lib.git"
+  GIT_TAG "master"
+  DOWNLOAD_DIR ${BSON_LIB_SOURCE_DIRECTORY}
+  SOURCE_DIR ${BSON_LIB_SOURCE_DIRECTORY}
+  CONFIGURE_COMMAND ${CONFIGURE_COMMAND}
+  BUILD_IN_SOURCE true
+  INSTALL_COMMAND ""
+  UPDATE_COMMAND ""
 )
 
-set(EXPAT_SOURCE_DIRECTORY ${APR_UTIL_SOURCE_DIRECTORY}/../expat-2.1.0)
-set(EXPAT_BUILD_DIRECTORY ${APR_UTIL_BUILD_DIRECTORY}/../expat-2.1.0)
+set(INSTALL_COMMAND "make install")
 
-set(COMMON_CONFIGURE_FLAGS
-  "--with-apr=../apr-build"
-  "--with-expat-source=${EXPAT_SOURCE_DIRECTORY}"
-  "--with-expat-build=${EXPAT_BUILD_DIRECTORY}"
-)
-
-if(DEFINED CMAKE_TOOLCHAIN_FILE)
-  include("./QNX_APR_UTIL.cmake")
-else()
-  set(CONFIGURE_FLAGS ${COMMON_CONFIGURE_FLAGS})
+if (${3RD_PARTY_INSTALL_PREFIX} MATCHES "/usr/local")
+  set(INSTALL_COMMAND "sudo ${INSTALL_COMMAND}")
 endif()
 
-
-add_custom_command(OUTPUT ${APR_UTIL_BUILD_DIRECTORY}/Makefile
-  COMMAND CC=${CMAKE_C_COMPILER} ${APR_UTIL_SOURCE_DIRECTORY}/configure ${CONFIGURE_FLAGS}
-  DEPENDS libapr-1
-  DEPENDS expat
-  WORKING_DIRECTORY ${APR_UTIL_BUILD_DIRECTORY}
-)
-
-add_custom_target(apr-util ALL make
-  DEPENDS ${APR_UTIL_BUILD_DIRECTORY}/Makefile
-  WORKING_DIRECTORY ${APR_UTIL_BUILD_DIRECTORY}
-)
-
 install(
-  DIRECTORY ${APR_UTIL_LIBS_DIRECTORY}/
-  DESTINATION ${3RD_PARTY_INSTALL_PREFIX_ARCH}/lib
-  USE_SOURCE_PERMISSIONS
-  FILES_MATCHING PATTERN libaprutil-1.so*
+  CODE "execute_process(
+    WORKING_DIRECTORY ${BSON_LIB_SOURCE_DIRECTORY}
+    COMMAND /bin/bash -c \"${INSTALL_COMMAND}\"
+  )"
 )
