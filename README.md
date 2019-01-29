@@ -72,7 +72,7 @@ A quick guide to installing, configuring, and running an instance of the SDL Cor
   ```
   <b>Note:</b> this command will build and install project. The installation includes installation of SDL Core to <buid_dir>/bin and all third party libraries to `THIRD_PARTY_INSTALL_PREFIX` and `THIRD_PARTY_INSTALL_PREFIX_ARCH`
 
-<b>Note:</b> SDL Core provides a [Dockerfile]() containing all the required tool for building for AGL target.
+<b>Note:</b> SDL Core provides a [Dockerfile](tools/infrastructure/docker/AGL/Dockerfile) containing all the required tool for building for AGL target.
 
 ### Project deployment to AGL machine
 
