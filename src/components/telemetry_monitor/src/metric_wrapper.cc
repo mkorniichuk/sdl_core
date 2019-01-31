@@ -68,6 +68,10 @@ void MetricWrapper::Clear() {
   }
 }
 
+utils::ResourseUsage const* MetricWrapper::GetResources() {
+  return resources;
+}
+
 MetricWrapper::~MetricWrapper() {
   Clear();
 }

@@ -59,8 +59,14 @@ add_custom_target(generate_certificates
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
+add_custom_target(copy_certificates
+  COMMAND /bin/bash -c "cp -r client server ${TEST_BIN_DIR}"
+  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+)
+
 foreach(CERT_ENTRY ${CERT_LIST})
   file(COPY ${CERT_ENTRY} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 endforeach()
 
 add_dependencies(security_manager_test generate_certificates)
+add_dependencies(copy_certificates security_manager_test)

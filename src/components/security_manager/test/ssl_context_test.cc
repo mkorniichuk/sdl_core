@@ -57,12 +57,9 @@ const uint8_t* kClientBuf;
 const std::string kAllCiphers = "ALL";
 size_t server_buf_len;
 size_t client_buf_len;
-#ifdef __QNXNTO__
-const std::string kFordCipher = SSL3_TXT_RSA_DES_192_CBC3_SHA;
-#else
+
 // Used cipher from ford protocol requirement
 const std::string kFordCipher = TLS1_TXT_RSA_WITH_AES_256_GCM_SHA384;
-#endif
 }  // namespace
 
 namespace test {

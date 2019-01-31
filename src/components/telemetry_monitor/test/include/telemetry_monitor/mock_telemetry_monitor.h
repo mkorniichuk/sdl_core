@@ -50,6 +50,7 @@ class MockTelemetryMonitor : public telemetry_monitor::TelemetryMonitor {
   MOCK_METHOD0(Start, void());
   MOCK_METHOD1(SendMetric,
                void(std::shared_ptr<telemetry_monitor::MetricWrapper> metric));
+  MOCK_CONST_METHOD0(getResources, utils::ResourseUsage&());
 };
 }  // namespace transport_manager_test
 }  // namespace components
