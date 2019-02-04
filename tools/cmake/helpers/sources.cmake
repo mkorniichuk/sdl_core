@@ -139,7 +139,7 @@ function(create_test NAME SOURCES LIBS)
   target_link_libraries("${NAME}" ${LIBS})
   target_link_libraries("${NAME}" Utils)
   add_test(NAME ${NAME}
-  COMMAND ${NAME} --gtest_output=xml:${CMAKE_BINARY_DIR}/test_results/)
+    COMMAND ${NAME} --gtest_output=xml:${CMAKE_BINARY_DIR}/test_results/)
 
   set(match_string  "${CMAKE_INSTALL_PREFIX}")
   set(replace_string "${CMAKE_INSTALL_PREFIX}/tests")
@@ -150,33 +150,29 @@ function(create_test NAME SOURCES LIBS)
 endfunction()
 
 function(create_cotired_test NAME SOURCES LIBS)
-  list(APPEND SOURCES
-              ${CMAKE_SOURCE_DIR}/src/components/test_main.cc)
-  add_executable(
-    ${NAME}
-    EXCLUDE_FROM_ALL
+  add_executable("${NAME}"
+    ${CMAKE_SOURCE_DIR}/src/components/test_main.cc
     ${SOURCES}
   )
+
+  # TODO: Fix problems with Cotire on Windows and Qt
+  if(${USE_COTIRE} AND (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
+    include(${CMAKE_SOURCE_DIR}/tools/cmake/helpers/cotire.cmake)
+    cotire(${NAME})
+    get_target_property(_unityTargetName ${NAME} COTIRE_UNITY_TARGET_NAME)
+    set_target_properties(${NAME} PROPERTIES EXCLUDE_FROM_ALL 1)
+    set_target_properties(${_unityTargetName} PROPERTIES EXCLUDE_FROM_ALL 0)
+    set(NAME ${_unityTargetName})
+  endif()
 
   set(match_string  "${CMAKE_INSTALL_PREFIX}")
   set(replace_string "${CMAKE_INSTALL_PREFIX}/tests")
   string(REPLACE "/test" "" TEST_BIN_DIR ${CMAKE_CURRENT_BINARY_DIR})
   string(REPLACE ${match_string} ${replace_string} TEST_BIN_DIR ${TEST_BIN_DIR})
-  install(TARGETS ${NAME} DESTINATION ${TEST_BIN_DIR})
   set(TEST_BIN_DIR ${TEST_BIN_DIR} PARENT_SCOPE)
 
-  # TODO: Fix problems with Cotire on Windows and Qt APPLINK-28060
-  if(${USE_COTIRE} AND (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
-    include(${CMAKE_SOURCE_DIR}/tools/cmake/helpers/cotire.cmake)
-    cotire(${NAME})
-    set(NAME "${NAME}_unity")
-  endif()
   target_link_libraries(${NAME} ${LIBS})
-  set_target_properties(
-    ${NAME}
-    PROPERTIES
-    EXCLUDE_FROM_ALL 0
-  )
   add_test(NAME ${NAME}
-  COMMAND ${NAME} --gtest_output=xml:${CMAKE_BINARY_DIR}/test_results/)
+    COMMAND ${NAME} --gtest_output=xml:${CMAKE_BINARY_DIR}/test_results/)
+  install(TARGETS ${NAME} DESTINATION ${TEST_BIN_DIR})
 endfunction()
