@@ -139,7 +139,7 @@ function(create_test NAME SOURCES LIBS)
   target_link_libraries("${NAME}" ${LIBS})
   target_link_libraries("${NAME}" Utils)
   add_test(NAME ${NAME}
-  COMMAND ${NAME} --gtest_output=xml:${CMAKE_BINARY_DIR}/test_results/)
+    COMMAND ${NAME} --gtest_output=xml:${CMAKE_BINARY_DIR}/test_results/)
 
   set(match_string  "${CMAKE_INSTALL_PREFIX}")
   set(replace_string "${CMAKE_INSTALL_PREFIX}/tests")
@@ -155,7 +155,7 @@ function(create_cotired_test NAME SOURCES LIBS)
     ${SOURCES}
   )
 
-  # TODO: Fix problems with Cotire on Windows and Qt APPLINK-28060
+  # TODO: Fix problems with Cotire on Windows and Qt
   if(${USE_COTIRE} AND (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
     include(${CMAKE_SOURCE_DIR}/tools/cmake/helpers/cotire.cmake)
     cotire(${NAME})
