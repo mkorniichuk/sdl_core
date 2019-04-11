@@ -90,6 +90,15 @@ class RCHelpers {
                    std::vector<std::string> > AppsModules;
   static AppsModules GetApplicationsAllowedModules(
       application_manager::ApplicationManager& app_mngr);
+
+  /**
+   * @brief RemoveRedundantGPSDataFromVIDataMsg removes redundant GPS data
+   * params from interrior vehicle data response message if one contains radio
+   * station location data
+   * @param msg_params Params of the interrion vehicle data response message
+   */
+  static void RemoveRedundantGPSDataFromIVDataMsg(
+      smart_objects::SmartObject& msg_params);
 };
 
 }  // rc_rpc_plugin
