@@ -189,6 +189,10 @@ bool LifeCycleImpl::StartComponents() {
 
 void LifeCycleImpl::LowVoltage() {
   LOG4CXX_AUTO_TRACE(logger_);
+
+#ifdef MESSAGEBROKER_HMIADAPTER
+  mb_adapter_->OnLowVoltage();
+#endif  // MESSAGEBROKER_HMIADAPTER
   transport_manager_->Visibility(false);
   app_manager_->OnLowVoltage();
 }
@@ -200,6 +204,9 @@ void LifeCycleImpl::IgnitionOff() {
 
 void LifeCycleImpl::WakeUp() {
   LOG4CXX_AUTO_TRACE(logger_);
+#ifdef MESSAGEBROKER_HMIADAPTER
+  mb_adapter_->OnWakeUp();
+#endif  // MESSAGEBROKER_HMIADAPTER
   app_manager_->OnWakeUp();
   transport_manager_->Reinit();
   transport_manager_->Visibility(true);
