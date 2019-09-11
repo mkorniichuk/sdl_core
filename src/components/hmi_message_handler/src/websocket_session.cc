@@ -83,6 +83,7 @@ bool WebsocketSession::IsShuttingDown() {
 }
 
 void WebsocketSession::Recv(boost::system::error_code ec) {
+  LOG4CXX_AUTO_TRACE(ws_logger_);
   if (shutdown_) {
     return;
   }
@@ -175,10 +176,12 @@ void WebsocketSession::Read(boost::system::error_code ec,
 }
 
 void WebsocketSession::OnLowVoltage() {
+  LOG4CXX_AUTO_TRACE(ws_logger_);
   is_low_voltage_ = true;
 }
 
 void WebsocketSession::OnWakeUp() {
+  LOG4CXX_AUTO_TRACE(ws_logger_);
   reset_low_voltage_flag_timer_.Start(kLowVoltageResetTimeout,
                                       timer::kSingleShot);
 }
@@ -195,6 +198,7 @@ std::string WebsocketSession::GetComponentName(std::string& method) {
 }
 
 void WebsocketSession::ResetLowVoltageFlag() {
+  LOG4CXX_AUTO_TRACE(ws_logger_);
   is_low_voltage_ = false;
 }
 

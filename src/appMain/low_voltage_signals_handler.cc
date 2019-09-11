@@ -104,13 +104,7 @@ void LowVoltageSignalsHandler::HandleSignal(const int signo) {
       utils::Signals::ExitProcess(EXIT_FAILURE);
     }
 
-    if (0 != cpid_) {
-      // In Parent process
-      LOG4CXX_DEBUG(logger_, "Child PID: " << cpid_);
-      utils::Signals::WaitPid(cpid_, nullptr, 0);
-      LOG4CXX_DEBUG(logger_, "Child process: " << cpid_ << " is stopped");
-      life_cycle_.WakeUp();
-    } else {
+    if (0 == cpid_) {
       // In Child process
       sigset_t signal_set;
       sigfillset(&signal_set);
@@ -121,6 +115,12 @@ void LowVoltageSignalsHandler::HandleSignal(const int signo) {
       std::cout << "Stopping parent process: " << getppid() << std::endl;
       utils::Signals::SendSignal(SIGSTOP, getppid());
       std::cout << "SIGSTOP signal sent to " << getppid() << std::endl;
+    } else {
+      // In Parent process
+      LOG4CXX_DEBUG(logger_, "Child PID: " << cpid_);
+      utils::Signals::WaitPid(cpid_, nullptr, 0);
+      LOG4CXX_DEBUG(logger_, "Child process: " << cpid_ << " is stopped");
+      life_cycle_.WakeUp();
     }
     return;
   }
