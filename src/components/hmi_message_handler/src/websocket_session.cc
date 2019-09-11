@@ -125,6 +125,13 @@ void WebsocketSession::sendJsonMessage(Json::Value& message) {
   Send(str_msg, message);
 }
 
+void WebsocketSession::ClearBuffers() {
+  LOG4CXX_AUTO_TRACE(ws_logger_);
+  buffer_.consume(buffer_.size());
+  send_buffer_.consume(send_buffer_.size());
+  m_receivingBuffer.clear();
+}
+
 void WebsocketSession::Read(boost::system::error_code ec,
                             std::size_t bytes_transferred) {
   LOG4CXX_AUTO_TRACE(ws_logger_);
@@ -182,8 +189,9 @@ void WebsocketSession::OnLowVoltage() {
 
 void WebsocketSession::OnWakeUp() {
   LOG4CXX_AUTO_TRACE(ws_logger_);
-  reset_low_voltage_flag_timer_.Start(kLowVoltageResetTimeout,
-                                      timer::kSingleShot);
+  is_low_voltage_ = false;
+//  reset_low_voltage_flag_timer_.Start(kLowVoltageResetTimeout,
+//                                      timer::kSingleShot);
 }
 
 std::string WebsocketSession::GetComponentName(std::string& method) {
