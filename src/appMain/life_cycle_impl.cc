@@ -209,12 +209,12 @@ void LifeCycleImpl::ClearBuffersBeforeWakeUp() {
 
 void LifeCycleImpl::WakeUp() {
   LOG4CXX_AUTO_TRACE(logger_);
-#ifdef MESSAGEBROKER_HMIADAPTER
-  mb_adapter_->OnWakeUp();
-#endif  // MESSAGEBROKER_HMIADAPTER
   app_manager_->OnWakeUp();
   transport_manager_->Reinit();
   transport_manager_->Visibility(true);
+#ifdef MESSAGEBROKER_HMIADAPTER
+  mb_adapter_->OnWakeUp();
+#endif  // MESSAGEBROKER_HMIADAPTER
 }
 
 #ifdef MESSAGEBROKER_HMIADAPTER

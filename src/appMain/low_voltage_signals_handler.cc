@@ -128,7 +128,6 @@ void LowVoltageSignalsHandler::HandleSignal(const int signo) {
   if (SIGWAKEUP_ == signo) {
     std::cout << "Received WAKE UP signal" << std::endl;
     std::cout << "Waking Up parent process: " << getppid() << std::endl;
-    life_cycle_.ClearBuffersBeforeWakeUp();
     utils::Signals::SendSignal(SIGCONT, getppid());
     std::cout << "Stopping child process: " << getpid() << std::endl;
     utils::Signals::ExitProcess(0);
