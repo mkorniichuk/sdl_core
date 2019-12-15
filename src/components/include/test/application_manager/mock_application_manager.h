@@ -145,8 +145,8 @@ class MockApplicationManager : public application_manager::ApplicationManager {
                     const bool status));
   MOCK_METHOD3(OnHMIStateChanged,
                void(const uint32_t app_id,
-                    const HmiStatePtr from,
-                    const HmiStatePtr to));
+                    const application_manager::HmiStatePtr from,
+                    const application_manager::HmiStatePtr to));
   MOCK_METHOD1(
       SendHMIStatusNotification,
       void(const std::shared_ptr<application_manager::Application> app));
